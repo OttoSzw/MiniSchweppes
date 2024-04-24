@@ -31,6 +31,7 @@ typedef struct pipex
 	int		i;
 	int		yes;
 	int		pipe_fd[2];
+	int		saved_in;
 	int		saved_out;
 	pid_t	id;
 }			t_pipex;

@@ -30,6 +30,8 @@ void	do_child(int ac, char **av, t_pipex *pipex, char **env)
 
 void	exec_child(int ac, char **av, t_pipex *pipex, char **env)
 {
+	pipex->saved_in = dup(STDIN_FILENO);
+	pipex->saved_out = dup(STDOUT_FILENO);
 	while (pipex->i <= ac - 5)
 	{
 		if (pipe(pipex->pipe_fd) == -1)
@@ -43,7 +45,9 @@ void	exec_child(int ac, char **av, t_pipex *pipex, char **env)
 		close(pipex->pipe_fd[1]);
 		pipex->i++;
 	}
+	dup2(pipex->saved_in, STDIN_FILENO);
 	dup2(pipex->saved_out, STDOUT_FILENO);
+	close(pipex->saved_in);
 	close(pipex->saved_out);
 }
 
