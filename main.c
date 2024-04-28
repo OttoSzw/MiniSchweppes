@@ -12,18 +12,18 @@
 
 #include "minishell.h"
 
-void	do_simple_command(t_set *set)
-{
-	int	id;
+// void	do_simple_command(t_set *set)
+// {
+// 	int	id;
 
-	id = fork();
-	if (id == 0)
-	{
-		execute_command(set->cmd, set->env);
-	}
-	while (wait(NULL) != -1)
-		continue ;
-}
+// 	id = fork();
+// 	if (id == 0)
+// 	{
+// 		execute_command(set->cmd, set->env);
+// 	}
+// 	while (wait(NULL) != -1)
+// 		continue ;
+// }
 
 int	check_pipe(t_set *set)
 {
@@ -41,6 +41,9 @@ int	check_pipe(t_set *set)
 
 void	executable(t_set *set)
 {
+	int	j;
+
+	j = 0;
 	if (check_pipe(set))
 		PipeBendoNaBendo(set, set->env);
 	else if (ft_strcmp("echo", set->cmd[0]) == 0)
@@ -53,6 +56,8 @@ void	executable(t_set *set)
 		env_command(set->cmd, set->env);
 	else if (ft_strcmp("exit", set->cmd[0]) == 0)
 		exit_command(set->cmd[1], set->size_tab);
+	else if (ft_strcmp("unset", set->cmd[0]) == 0)
+		unset_command(set, set->env);
 	else
 	{
 		do_simple_command(set);
@@ -67,8 +72,9 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	(void)env;
 	if (ac < 1)
-			return (1);
+		return (1);
 	i = 0;
+	set.env = copy_of_tab(env);
 	while (1)
 	{
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
@@ -78,7 +84,9 @@ int	main(int ac, char **av, char **env)
 								"e\1\033[38;5;214m\2s\1\033[38;5;208m\2 \1\033[38;5;208m\2"
 								">\1\033[0m ");
 		if (set.input == NULL)
+		{
 			break ;
+		}
 		set.cmd = NULL;
 		if (ft_occurence(set.input) != ft_strlen(set.input))
 		{
@@ -88,14 +96,13 @@ int	main(int ac, char **av, char **env)
 		}
 		if (set.cmd)
 		{
-			set.env = copy_of_tab(env);
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);
 			free_tab(set.cmd);
-			free_tab(set.env);
 		}
 		free(set.input);
- 	}
+	}
+	free_tab(set.env);
 	clear_history();
 	return (0);
 }

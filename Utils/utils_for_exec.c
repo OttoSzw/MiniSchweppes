@@ -34,13 +34,13 @@ void	error_cmd(void)
 	exit(EXIT_FAILURE);
 }
 
-void	error_mess(void)
+int	error_mess(void)
 {
 	char	*s;
 
 	s = "Error";
 	perror(s);
-	exit(EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
 
 char	*find_path(char *cmd, char **env)
@@ -81,7 +81,14 @@ void	execute_command(char **av, char **env)
 	char	**cmd;
 	char	*path;
 
-	cmd = av;
+	if (!av[1])
+	{
+		cmd = ft_split(av[0], ' ');
+	}
+	else
+	{
+		cmd = av;
+	}
 	if (!cmd[0])
 	{
 		free_paths(cmd);

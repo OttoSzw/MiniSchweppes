@@ -40,9 +40,6 @@ void	execute_command2(char *av, char **env)
 	}
 	if (execve(path, cmd, env) == -1)
 		escape(path);
-	while (wait(NULL) != -1)
-		continue ;
-	free_tab(cmd);
 }
 
 // void	execute_command(char *av, char **env)

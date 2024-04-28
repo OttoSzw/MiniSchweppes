@@ -1,0 +1,55 @@
+#include "minishell.h"
+
+int	get_next_line(char **line)
+{
+	char	*buffer;
+	int		i;
+	int		r;
+	char	c;
+
+	i = 0;
+	r = 0;
+	buffer = (char *)calloc(10000, 1);
+	if (!buffer)
+		return (-1);
+	r = read(0, &c, 1);
+	while (r && c != '\n' && c != '\0')
+	{
+		if (c != '\n' && c != '\0')
+			buffer[i] = c;
+		i++;
+		r = read(0, &c, 1);
+	}
+	buffer[++i] = '\0';
+	*line = buffer;
+	return (r);
+}
+
+void	here_doc(char *limiter)
+{
+	pid_t	reader;
+	int		fd[2];
+	char	*line;
+
+	if (pipe(fd) == -1)
+		error_mess();
+	reader = fork();
+	if (reader == 0)
+	{
+		close(fd[0]);
+		while (get_next_line(&line))
+		{
+			if (ft_strcmp(line, limiter) == 0)
+				exit(EXIT_SUCCESS);
+			ft_putendl_fd(line, fd[1]);
+			free(line);
+		}
+		exit(1);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		wait(NULL);
+	}
+}

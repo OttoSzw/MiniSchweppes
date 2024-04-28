@@ -76,14 +76,14 @@ int	get_next_line(char **line)
 	return (r);
 }
 
-void	here_doc(char *limiter, int ac)
+void	here_doc(char *limiter)
 {
 	pid_t	reader;
 	int		fd[2];
 	char	*line;
 
-	if (ac < 6)
-		invalid_arguments2();
+	// if (ac < 6)
+	// 	invalid_arguments2();
 	if (pipe(fd) == -1)
 		error_mess();
 	reader = fork();

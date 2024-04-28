@@ -36,7 +36,6 @@ typedef struct pipex
 	pid_t	id;
 }			t_pipex;
 
-
 typedef struct s_set
 {
 	char	*input;
@@ -46,6 +45,8 @@ typedef struct s_set
 	int		i;
 	char	*for_fd;
 	char	**for_write;
+	int		saved_in;
+	int		saved_out;
 }			t_set;
 
 // Minishell.h
@@ -57,6 +58,7 @@ int			env_command(char **s, char **env);
 int			pwd_command(char **s);
 int			cd_command(char *path);
 int			exit_command(char *s, int size);
+int			unset_command(t_set *set, char **env);
 
 //	Utils functions for tab
 
@@ -67,17 +69,18 @@ char		**copy_of_tab(char **tab);
 //	Utils functions for execution
 
 void		execute_command(char **av, char **env);
+void		do_simple_command(t_set *set);
 
 //	Utils functions for parsing
 
 char		**parse(t_set *set);
-size_t			ft_occurence(char *s);
+size_t		ft_occurence(char *s);
 
 // Utils for Pipex
 
 void		invalid_arguments(void);
 void		invalid_arguments2(void);
-void		error_mess(void);
+int			error_mess(void);
 void		error_cmd(void);
 void		execute_command2(char *av, char **env);
 char		*find_path(char *cmd, char **env);
@@ -91,8 +94,9 @@ void		child3(char *av, char *av2, int *pipe_fd, char **env,
 				t_pipex *pipex);
 void		do_child(int ac, char **av, t_pipex *pipex, char **env);
 void		exec_child(int ac, char **av, t_pipex *pipex, char **env);
-void		here_doc(char *limiter, int ac);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
+int			check_redirections(char **av);
+void		here_doc(char *limiter);
 
 #endif
