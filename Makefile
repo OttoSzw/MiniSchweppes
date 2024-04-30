@@ -6,7 +6,7 @@
 #    By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/20 23:27:37 by oszwalbe          #+#    #+#              #
-#    Updated: 2024/04/27 17:11:35 by oszwalbe         ###   ########.fr        #
+#    Updated: 2024/04/29 14:08:00 by oszwalbe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ ${LIBFTPATH}:
 all: ${NAME}
 
 leaks : all
-	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --suppressions=ignore.txt   ./minishell
+	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --trace-children=yes --suppressions=ignore.txt -q ./minishell
 
 clean:
 		make -C ${LIBFTDIR} clean

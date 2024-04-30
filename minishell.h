@@ -47,6 +47,8 @@ typedef struct s_set
 	char	**for_write;
 	int		saved_in;
 	int		saved_out;
+	int		append;
+	int		index;
 }			t_set;
 
 // Minishell.h
@@ -65,11 +67,15 @@ int			unset_command(t_set *set, char **env);
 void		free_tab(char **s);
 int			tab_calculate(char **s);
 char		**copy_of_tab(char **tab);
+int			tab_calculate_no_pipe(char **s);
 
 //	Utils functions for execution
 
 void		execute_command(char **av, char **env);
 void		do_simple_command(t_set *set);
+void		print_tab(char **cmd);
+char		***copy_of_tab_of_tab(t_set *set, char **tab);
+void		parse_for_pipe(t_set *set);
 
 //	Utils functions for parsing
 

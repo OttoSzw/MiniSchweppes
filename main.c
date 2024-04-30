@@ -45,7 +45,7 @@ void	executable(t_set *set)
 
 	j = 0;
 	if (check_pipe(set))
-		PipeBendoNaBendo(set, set->env);
+		parse_for_pipe(set);
 	else if (ft_strcmp("echo", set->cmd[0]) == 0)
 		echo_command(set->cmd + 1);
 	else if (ft_strcmp("cd", set->cmd[0]) == 0)
@@ -62,6 +62,32 @@ void	executable(t_set *set)
 	{
 		do_simple_command(set);
 	}
+}
+
+void	parse_for_pipe(t_set* set)
+{
+	char ***c;
+	int	i;
+	int j;
+
+	i = 0;
+	j = 0;
+	print_tab(set->cmd);
+	c = copy_of_tab_of_tab(set, set->cmd);
+	while (c[i])
+	{
+		printf("\nCase %d :\n", i);
+		j = 0;
+		while (c[i][j])
+		{
+			printf("-> : %s\n", c[i][j]);
+			j++;
+		}
+		i++;
+	}
+	free_tab(c[0]);
+	free_tab(c[1]);
+	free(c);
 }
 
 int	main(int ac, char **av, char **env)
@@ -98,6 +124,7 @@ int	main(int ac, char **av, char **env)
 		{
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);
+			// exec(&set);
 			free_tab(set.cmd);
 		}
 		free(set.input);

@@ -1,5 +1,21 @@
 #include "minishell.h"
 
+int	check_append(t_set *set)
+{
+	int	i;
+
+	i = 0;
+	while (set->cmd[i])
+	{
+		if (ft_strcmp(">>", set->cmd[i]) == 0)
+		{
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 int	check_redirections(char  **av)
 {
 	int	i;
@@ -13,6 +29,8 @@ int	check_redirections(char  **av)
 			return (2);
 		else if (ft_strcmp("<<", av[i]) == 0)
 			return (3);
+		else if (ft_strcmp(">>", av[i]) == 0)
+			return (4);
 		i++;
 	}
 	return (0);
@@ -85,7 +103,7 @@ char **copy_tabcmd(t_set *set)
 		i++;
 		i++;
 	}
-	while (set->cmd[i] && ft_strcmp(">", set->cmd[i]) != 0)
+	while (set->cmd[i] && (ft_strcmp(">", set->cmd[i]) != 0 && ft_strcmp(">>", set->cmd[i]) != 0))
 	{
 		copy[j] = ft_strdup(set->cmd[i]);
 		i++;
@@ -128,7 +146,7 @@ char *find_file_out(t_set *set)
 	i = 0;
 	while (set->cmd[i])
 	{
-		if (set->cmd[i + 1] && (ft_strcmp(">", set->cmd[i]) == 0))
+		if (set->cmd[i + 1] && ((ft_strcmp(">", set->cmd[i]) == 0) || (ft_strcmp(">>", set->cmd[i]) == 0)))
 		{
 			return (set->cmd[i + 1]);
 		}
@@ -163,6 +181,8 @@ void	do_simple_command(t_set *set)
 	char **cmd;
 
 	init_fd(set);
+	set->append = 0;
+	set->append = check_append(set);
 	rd = check_redirections(set->cmd);
 	file_in = find_file_in(set);
 	file_out = find_file_out(set);
@@ -176,20 +196,32 @@ void	do_simple_command(t_set *set)
 				if (fd == -1)
 					error_mess();
 				dup2(fd, STDIN_FILENO);
+				close(fd);
 			}
 		}
 		else if (rd == 3)
 			here_doc(set->cmd[1]);
 		if (file_out)
 		{
-			fd = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-			if (fd == -1)
-				error_mess();
+			if (set->append == 1)
+			{
+				fd = open(file_out, O_WRONLY | O_CREAT | O_APPEND, 0777);
+				if (fd == -1)
+					error_mess();
+			}
+			else
+			{
+				fd = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+				if (fd == -1)
+				{
+					error_mess();
+				}
+			}
 			dup2(fd, STDOUT_FILENO);
+			close(fd);
 		}
 		id = fork();
 		cmd = copy_tabcmd(set);
-		print_tab(cmd);
 		if (id == 0)
 		{
 			execute_command(cmd, set->env);

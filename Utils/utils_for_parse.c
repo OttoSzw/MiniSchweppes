@@ -186,7 +186,7 @@ char	**parse(t_set *set)
 	g = 0;
 	if (counter == 0)
 		return (NULL);
-	split = malloc(sizeof(char *) * (counter + 1));
+	split = ft_calloc(sizeof(char *), (counter + 1));
 	set->i = 0;
 	i = set->i;
 	while (set->input[i] == ' ')
