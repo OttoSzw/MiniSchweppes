@@ -11,7 +11,7 @@ int	unset_command(t_set *set, char **env)
 	{
 		if (ft_strncmp(set->cmd[1], env[i], ft_strlen(set->cmd[1])) == 0)
 		{
-			// free(env[i]);
+			free(env[i]);
 			while (env[i + 1])
 			{
 				env[i] = env[i + 1];

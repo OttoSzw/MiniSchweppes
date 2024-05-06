@@ -58,33 +58,141 @@ void	executable(t_set *set)
 		exit_command(set->cmd[1], set->size_tab);
 	else if (ft_strcmp("unset", set->cmd[0]) == 0)
 		unset_command(set, set->env);
+	else if (ft_strcmp("export", set->cmd[0]) == 0)
+		export_command(set, set->env);
 	else
 	{
 		do_simple_command(set);
 	}
 }
 
-void	parse_for_pipe(t_set* set)
-{
-	char ***c;
-	int	i;
-	int j;
+void	command(char **c, t_set *set)
+{	
+	int rd;
+	char *file_in;
+	char *file_out;
+	int fd;
+	char **cmd;
 
-	i = 0;
-	j = 0;
-	print_tab(set->cmd);
-	c = copy_of_tab_of_tab(set, set->cmd);
-	while (c[i])
+	set->append = 0;
+	set->append = check_append(c);
+	rd = check_redirections(c);
+	file_in = find_file_in(c);
+	file_out = find_file_out(c);
+	if (rd)
 	{
-		printf("\nCase %d :\n", i);
-		j = 0;
-		while (c[i][j])
+		if (rd == 1)
 		{
-			printf("-> : %s\n", c[i][j]);
-			j++;
+			if (file_in)
+			{
+				fd = open(file_in, O_RDONLY, 0777);
+				if (fd == -1)
+					error_mess();
+				dup2(fd, STDIN_FILENO);
+				close(fd);
+			}
+		}
+		else if (rd == 3)
+			here_doc(c[1]);
+		if (file_out)
+		{
+			if (set->append == 1)
+			{
+				fd = open(file_out, O_WRONLY | O_CREAT | O_APPEND, 0777);
+				if (fd == -1)
+					error_mess();
+			}
+			else
+			{
+				fd = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+				if (fd == -1)
+				{
+					error_mess();
+				}
+			}
+			dup2(fd, STDOUT_FILENO);
+			close(fd);
+		}
+		cmd = copy_tabcmd(c);
+		execute_command(cmd, set->env);
+		free_tab(cmd);
+	}
+	else
+	{
+		execute_command(c, set->env);
+	}
+}
+
+void	exec_multiple_pipe(char ***c, t_set *set, int size)
+{
+	int	i;
+	int	pipe_fd[2];
+	int	id;
+
+	init_fd(set);
+	i = 0;
+	while (i < size)
+	{
+		if (pipe(pipe_fd) == -1)
+			error_mess();
+		id = fork();
+		if (id == -1)
+			error_mess();
+		if (id == 0)
+		{
+			if (i == 0)
+			{
+				dup2(pipe_fd[1], STDOUT_FILENO);
+				close(pipe_fd[0]);
+				command(c[i], set);
+			}
+			else if (i == (size - 1))
+			{
+				dup2(pipe_fd[0], STDIN_FILENO);
+				close(pipe_fd[1]);
+				command(c[i], set);
+			}
+			else
+			{
+				dup2(pipe_fd[1], STDOUT_FILENO);
+				dup2(pipe_fd[0], STDIN_FILENO);
+				command(c[i], set);
+			}
+			dup2(pipe_fd[1], STDOUT_FILENO);
+			dup2(pipe_fd[0], STDIN_FILENO);
+			close(pipe_fd[0]);
+			close(pipe_fd[1]);
 		}
 		i++;
 	}
+	reset_fd(set);
+	while (wait(NULL) != -1)
+		continue ;
+}
+
+void	parse_for_pipe(t_set* set)
+{
+	char ***c;
+	int	nb_arg;
+	// int	i;
+	// int j;
+
+	// i = 0;
+	// j = 0;
+	c = copy_of_tab_of_tab(set, set->cmd);
+	nb_arg = count_cmdpipe(set->cmd);
+	// while (c[i])
+	// {
+	// 	printf("\nCase %d :\n", i);
+	// 	j = 0;
+	// 	while (c[i][j])
+	// 	{
+	// 		printf("-> : %s\n", c[i][j]);
+	// 		j++;
+	// 	}
+	// 	i++;
+	// }
+	exec_multiple_pipe(c, set, nb_arg);
 	free_tab(c[0]);
 	free_tab(c[1]);
 	free(c);
@@ -119,14 +227,15 @@ int	main(int ac, char **av, char **env)
 			add_history(set.input);
 			set.i = 0;
 			set.cmd = parse(&set);
+			if (expand(&set) == 0)
+				break;
 		}
 		if (set.cmd)
 		{
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);
-			// exec(&set);
-			free_tab(set.cmd);
 		}
+		free_tab(set.cmd);
 		free(set.input);
 	}
 	free_tab(set.env);

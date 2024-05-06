@@ -51,7 +51,7 @@ void	exec_child(int ac, char **av, t_pipex *pipex, char **env)
 	close(pipex->saved_out);
 }
 
-int	get_next_line(char **line)
+int	get_next_line2(char **line)
 {
 	char	*buffer;
 	int		i;
@@ -90,13 +90,18 @@ void	here_doc(char *limiter)
 	if (reader == 0)
 	{
 		close(fd[0]);
-		while (get_next_line(&line))
+		while (get_next_line2(&line))
 		{
 			if (ft_strcmp(line, limiter) == 0)
+			{
+				free(line);
+				close(fd[1]);
 				exit(EXIT_SUCCESS);
+			}
 			ft_putendl_fd(line, fd[1]);
 			free(line);
 		}
+		close(fd[1]);
 		exit(1);
 	}
 	else

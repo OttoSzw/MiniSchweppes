@@ -29,8 +29,8 @@ int	tab_calculate(char **s)
 {
 	int	i;
 
-	i = 0;
-	while (s[i])
+	i = 0; 
+	while (s[i] != NULL)
 		i++;
 	return (i);
 }
@@ -79,10 +79,17 @@ char	**copy_of_tab(char **tab)
 
 	i = 0;
 	size = tab_calculate(tab) + 1;
-	copy = (char **)malloc(sizeof(char *) * size);
+	copy = (char **)ft_calloc(sizeof(char *), size);
+	if (!copy)
+		return (NULL);
 	while (tab[i])
 	{
 		copy[i] = ft_strdup(tab[i]);
+		if (!copy[i])
+		{
+			free_tab(copy);
+			return (NULL);
+		}
 		i++;
 	}
 	copy[i] = NULL;
@@ -140,7 +147,6 @@ char	***copy_of_tab_of_tab(t_set *set, char **tab)
 			i++;
 		time++;
 	}
-	printf("%d\n", time);
 	copy[box] = NULL;
 	return (copy);
 }

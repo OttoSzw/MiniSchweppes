@@ -82,14 +82,10 @@ void	execute_command(char **av, char **env)
 	char	*path;
 
 	if (!av[1])
-	{
 		cmd = ft_split(av[0], ' ');
-	}
 	else
-	{
 		cmd = av;
-	}
-	if (!cmd[0])
+	if (!cmd || !cmd[0])
 	{
 		free_paths(cmd);
 		error_cmd();

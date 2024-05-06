@@ -1,13 +1,13 @@
 #include "minishell.h"
 
-int	check_append(t_set *set)
+int	check_append(char **cmd)
 {
 	int	i;
 
 	i = 0;
-	while (set->cmd[i])
+	while (cmd[i])
 	{
-		if (ft_strcmp(">>", set->cmd[i]) == 0)
+		if (ft_strcmp(">>", cmd[i]) == 0)
 		{
 			return (1);
 		}
@@ -36,43 +36,43 @@ int	check_redirections(char  **av)
 	return (0);
 }
 
-char	*find_cmd(t_set *set)
+char	*find_cmd(char **cmd)
 {
 	int	i;
 
 	i = 0;
-	while (set->cmd[i])
+	while (cmd[i])
 	{
-		if (set->cmd[i] && (ft_strcmp(">", set->cmd[i]) == 0))
+		if (cmd[i] && (ft_strcmp(">", cmd[i]) == 0))
 		{
-			return (set->cmd[i - 1]);
+			return (cmd[i - 1]);
 		}
-		else if (set->cmd[i] && ft_strcmp("<", set->cmd[i]) == 0)
+		else if (cmd[i] && ft_strcmp("<", cmd[i]) == 0)
 		{
-			return (set->cmd[i + 2]);
+			return (cmd[i + 2]);
 		}
 		i++;
 	}
 	return (NULL);
 }
 
-int	count_arg(t_set *set)
+int	count_arg(char **cmd)
 {
 	int	i;
 	int count;
 
 	i = 0;
 	count = 0;
-	if (ft_strcmp("<", set->cmd[i]) == 0)
+	if (ft_strcmp("<", cmd[i]) == 0)
 	{
 		i++;
-		if (access(set->cmd[1], F_OK) == -1)
+		if (access(cmd[1], F_OK) == -1)
 			error_mess();
 		i++;
 	}
-	while (set->cmd[i])
+	while (cmd[i])
 	{
-		if (ft_strcmp(">", set->cmd[i]) == 0)
+		if (ft_strcmp(">", cmd[i]) == 0)
 		{
 			return (count);
 		}
@@ -82,7 +82,7 @@ int	count_arg(t_set *set)
 	return (count);
 }
 
-char **copy_tabcmd(t_set *set)
+char **copy_tabcmd(char **cmd)
 {
 	char **copy;
 	int	i;
@@ -90,22 +90,22 @@ char **copy_tabcmd(t_set *set)
 
 	i = 0;
 	j = 0;
-	copy = (char **)malloc(sizeof(char *) * (count_arg(set) + 1));
-	if (set->cmd[i] && ft_strcmp("<", set->cmd[i]) == 0)
+	copy = (char **)malloc(sizeof(char *) * (count_arg(cmd) + 1));
+	if (cmd[i] && ft_strcmp("<", cmd[i]) == 0)
 	{
 		i++;
-		if (access(set->cmd[1], F_OK) == -1)
+		if (access(cmd[1], F_OK) == -1)
 			error_mess();
 		i++;
 	}
-	else if (set->cmd[i] && ft_strcmp("<<", set->cmd[i]) == 0)
+	else if (cmd[i] && ft_strcmp("<<", cmd[i]) == 0)
 	{
 		i++;
 		i++;
 	}
-	while (set->cmd[i] && (ft_strcmp(">", set->cmd[i]) != 0 && ft_strcmp(">>", set->cmd[i]) != 0))
+	while (cmd[i] && (ft_strcmp(">", cmd[i]) != 0 && ft_strcmp(">>", cmd[i]) != 0))
 	{
-		copy[j] = ft_strdup(set->cmd[i]);
+		copy[j] = ft_strdup(cmd[i]);
 		i++;
 		j++;
 	}
@@ -134,37 +134,37 @@ void	print_tab(char **cmd)
 	i = 0;
 	while (cmd[i])
 	{
-		printf("tab[%d] = %s\n", i, cmd[i]);
+		printf("declare -x %s\n", cmd[i]);
 		i++;
 	}
 }
 
-char *find_file_out(t_set *set)
+char *find_file_out(char **cmd)
 {
 	int	i;
 
 	i = 0;
-	while (set->cmd[i])
+	while (cmd[i])
 	{
-		if (set->cmd[i + 1] && ((ft_strcmp(">", set->cmd[i]) == 0) || (ft_strcmp(">>", set->cmd[i]) == 0)))
+		if (cmd[i + 1] && ((ft_strcmp(">", cmd[i]) == 0) || (ft_strcmp(">>", cmd[i]) == 0)))
 		{
-			return (set->cmd[i + 1]);
+			return (cmd[i + 1]);
 		}
 		i++;
 	}
 	return (NULL);
 }
 
-char *find_file_in(t_set *set)
+char *find_file_in(char **cmd)
 {
 	int	i;
 
 	i = 0;
-	while (set->cmd[i])
+	while (cmd[i])
 	{
-		if (set->cmd[i + 1] && (ft_strcmp("<", set->cmd[i]) == 0))
+		if (cmd[i + 1] && (ft_strcmp("<", cmd[i]) == 0))
 		{
-			return (set->cmd[i + 1]);
+			return (cmd[i + 1]);
 		}
 		i++;
 	}
@@ -182,10 +182,10 @@ void	do_simple_command(t_set *set)
 
 	init_fd(set);
 	set->append = 0;
-	set->append = check_append(set);
+	set->append = check_append(set->cmd);
 	rd = check_redirections(set->cmd);
-	file_in = find_file_in(set);
-	file_out = find_file_out(set);
+	file_in = find_file_in(set->cmd);
+	file_out = find_file_out(set->cmd);
 	if (rd)
 	{
 		if (rd == 1)
@@ -221,7 +221,7 @@ void	do_simple_command(t_set *set)
 			close(fd);
 		}
 		id = fork();
-		cmd = copy_tabcmd(set);
+		cmd = copy_tabcmd(set->cmd);
 		if (id == 0)
 		{
 			execute_command(cmd, set->env);

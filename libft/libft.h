@@ -12,9 +12,14 @@
 
 #ifndef LIBFT_H
 # define LIBFT_H
+# include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
 
 typedef struct s_list
 {
@@ -114,4 +119,13 @@ int					ft_strcmp(char *s1, char *s2);
 
 long				ft_atol(char *num);
 
+int					check_new_line(char *stash);
+
+char				*remplissage(int fd, char *stash);
+
+char				*ft_cut(char *stash);
+
+char				*ft_clean(char *stash);
+
+char				*get_next_line(int fd);
 #endif

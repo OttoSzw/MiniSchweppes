@@ -11,11 +11,17 @@ char	*copy_normal(t_set *set)
 	// printf("ouen est i : %d\n", set->i);
 	j = 0;
 	counter = 0;
-	// printf("la taille est de %d\n\n", counter);
 	while (set->input[i] != ' ' && set->input[i] != '\0')
 	{
 		if (set->input[i] == '\'' || set->input[i] == '\"')
+		{
 			i++;
+			while (set->input[i + 1] && (set->input[i] != '\'' || set->input[i] != '\"'))
+			{
+				i++;
+				counter++;
+			}
+		}
 		else //if (set->input[i] != '\0' && (set->input[i] != '\'' && set->input[i] != '\"'))
 		{
 			counter++;
@@ -24,13 +30,21 @@ char	*copy_normal(t_set *set)
 	}
 	// printf("la taille est de %d\n\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
+	if (!tempo)
+	{
+		return (NULL);
+	}
 	i = set->i;
 	while (set->input[i] == ' ')
 		i++;
 	while (set->input[i] && set->input[i] != ' ' && set->input[i] != '\0')
 	{
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
+		{
 			i++;
+			while (set->input[i + 1] && (set->input[i] != '\'' || set->input[i] != '\"'))
+				tempo[j++] = set->input[i++];
+		}
 		else
 			tempo[j++] = set->input[i++];
 	}
@@ -115,21 +129,19 @@ char	*copy_quotes(t_set *set)
 int	check_quotes(t_set *set)
 {
 	int	i;
-	int dq;
-	int sq;
 
 	i = 0;
-	dq = -1;
-	sq = -1;
+	set->dq = -1;
+	set->sq = -1;
 	while (set->input[i])
 	{
-		if (set->input[i] == '\"' && sq == -1)
-			dq *= -1;
-		else if (set->input[i] == '\'' && dq == -1)
-			sq *= -1;
+		if (set->input[i] == '\"' && set->sq == -1)
+			set->dq *= -1;
+		else if (set->input[i] == '\'' && set->dq == -1)
+			set->sq *= -1;
 		i++;
 	}
-	if (dq == -1 && sq == -1)
+	if (set->dq == -1 && set->sq == -1)
 		return (1);
 	return (0);
 }
@@ -174,7 +186,15 @@ char	**parse(t_set *set)
 		{
 			counter++;
 			while (set->input[i] != ' ' && set->input[i] != '\0')
+			{
+				if (set->input[i] == '\'' || set->input[i] == '\"')
+				{
+					i++;
+					while (set->input[i] != '\'' && set->input[i] != '\"')
+						i++;
+				}
 				i++;
+			}
 		}
 		while (set->input[i] == ' ')
 				i++;

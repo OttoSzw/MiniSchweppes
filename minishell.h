@@ -49,8 +49,16 @@ typedef struct s_set
 	int		saved_out;
 	int		append;
 	int		index;
+	int		dq;
+	int		sq;
 }			t_set;
 
+typedef struct s_expand
+{
+	char	*before;
+	char	*after;
+	char	*expand;
+}			t_expand;
 // Minishell.h
 
 //	Builtins functions
@@ -61,6 +69,7 @@ int			pwd_command(char **s);
 int			cd_command(char *path);
 int			exit_command(char *s, int size);
 int			unset_command(t_set *set, char **env);
+int			export_command(t_set *set, char **env);
 
 //	Utils functions for tab
 
@@ -76,11 +85,31 @@ void		do_simple_command(t_set *set);
 void		print_tab(char **cmd);
 char		***copy_of_tab_of_tab(t_set *set, char **tab);
 void		parse_for_pipe(t_set *set);
+char		*find_file_in(char **cmd);
+char		*find_file_out(char **cmd);
+void		print_tab(char **cmd);
+void		reset_fd(t_set *set);
+void		init_fd(t_set *set);
+int			check_redirections(char **av);
+int			check_append(char **cmd);
+int			count_cmdpipe(char **av);
+char		**copy_tabcmd(char **cmd);
 
 //	Utils functions for parsing
 
 char		**parse(t_set *set);
 size_t		ft_occurence(char *s);
+
+// Expand functions
+
+int			expand(t_set *set);
+int			expand_arg(t_set *set, int nb);
+int			new_arg(t_set *set, int nb, t_expand *expand);
+int			new_cmd(t_set *set, int nb, t_expand *expand);
+char		*copy_str(char *str, int size);
+int			env_len(char *str);
+void		free_expand(t_expand *expand);
+void		init_expand(t_expand *expand);
 
 // Utils for Pipex
 
