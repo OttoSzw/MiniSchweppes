@@ -77,6 +77,8 @@ char	*copy_quotes(t_set *set)
 		}
 		else if (set->input[i] == '\'')
 		{
+			if (set->input[i + 1] && set->input[i + 1] == '$')
+				counter += 2;
 			i++;
 			while (set->input[i] != '\'')
 			{
@@ -107,12 +109,22 @@ char	*copy_quotes(t_set *set)
 		}
 		else if (set->input[i] == '\'')
 		{
-			i++;
-			while (set->input[i] != '\'')
+			if (set->input[i + 1] && set->input[i + 1] == '$')
 			{
 				tempo[j] = set->input[i];
 				i++;
 				j++;
+			}
+			while (set->input[i] && set->input[i] != '\'')
+			{
+				tempo[j] = set->input[i];
+				i++;
+				j++;
+				if (set->input[i] && set->input[i] == '\'')
+				{
+					tempo[j] = set->input[i];
+					j++;
+				}
 			}
 		}
 		i++;

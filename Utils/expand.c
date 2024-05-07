@@ -115,7 +115,9 @@ int	expand(t_set *set)
 		j = 0;
 		while (set->cmd[i][j])
 		{
-			if (set->cmd[i][j] == '$')
+			if (set->cmd[i][j] == '\'' && set->cmd[i][j + 1] == '$')
+				return (1);
+			else if (set->cmd[i][j] == '$')
 			{
 				if (expand_arg(set, i) == 0)
 					return (0);

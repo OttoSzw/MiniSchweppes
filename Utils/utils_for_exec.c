@@ -85,7 +85,7 @@ void	execute_command(char **av, char **env)
 		cmd = ft_split(av[0], ' ');
 	else
 		cmd = av;
-	if (!cmd || !cmd[0])
+	if (!cmd[0])
 	{
 		free_paths(cmd);
 		error_cmd();
@@ -101,7 +101,8 @@ void	execute_command(char **av, char **env)
 		path = find_path(cmd[0], env);
 		if (!path)
 		{
-			printf("command not found\n");
+			free_tab(cmd);
+			printf("bash : %s: command not found\n", av[0]);
 			return ;
 		}
 	}

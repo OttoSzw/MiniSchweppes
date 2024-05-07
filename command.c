@@ -224,6 +224,8 @@ void	do_simple_command(t_set *set)
 		cmd = copy_tabcmd(set->cmd);
 		if (id == 0)
 		{
+			close(set->saved_in);
+			close(set->saved_out);
 			execute_command(cmd, set->env);
 		}
 		free_tab(cmd);
@@ -232,7 +234,11 @@ void	do_simple_command(t_set *set)
 	{
 		id = fork();
 		if (id == 0)
+		{
+			close(set->saved_in);
+			close(set->saved_out);
 			execute_command(set->cmd, set->env);
+		}
 	}
 	reset_fd(set);
 	while (wait(NULL) != -1)

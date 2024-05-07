@@ -54,14 +54,14 @@ char	**ft_split(char const *s, char c)
 	i[0] = 0;
 	i[2] = 0;
 	p = (char *)s;
-	tab = (char **)ft_calloc(sizeof(char *), (countword(&p[i[0]], c) + 1));
+	tab = (char **)malloc(sizeof(char *) * (countword(&p[i[0]], c) + 1));
 	if (!s || !tab)
 		return (0);
 	while (i[2] < countword(p, c))
 	{
 		while (p[i[0]] == c)
 			i[0]++;
-		tab[i[2]] = (char *)ft_calloc(sizeof(char), ft_len(&p[i[0]], c) + 1);
+		tab[i[2]] = (char *)malloc(sizeof(char) * ft_len(&p[i[0]], c) + 1);
 		if (!tab[i[2]])
 			return (0);
 		i[1] = 0;

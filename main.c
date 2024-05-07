@@ -143,22 +143,33 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 			if (i == 0)
 			{
 				dup2(pipe_fd[1], STDOUT_FILENO);
+				close(pipe_fd[1]);
 				close(pipe_fd[0]);
+				close(set->saved_in);
+				close(set->saved_out);
 				command(c[i], set);
 			}
 			else if (i == (size - 1))
 			{
-				dup2(pipe_fd[0], STDIN_FILENO);
+				// dup2(pipe_fd[1], STDOUT_FILENO);
 				close(pipe_fd[1]);
+				close(pipe_fd[0]);
+				close(set->saved_in);
+				close(set->saved_out);
 				command(c[i], set);
 			}
 			else
 			{
 				dup2(pipe_fd[1], STDOUT_FILENO);
-				dup2(pipe_fd[0], STDIN_FILENO);
+				close(pipe_fd[1]);
+				close(pipe_fd[0]);
+				close(set->saved_in);
+				close(set->saved_out);
 				command(c[i], set);
 			}
-			dup2(pipe_fd[1], STDOUT_FILENO);
+		}
+		else
+		{
 			dup2(pipe_fd[0], STDIN_FILENO);
 			close(pipe_fd[0]);
 			close(pipe_fd[1]);
@@ -234,8 +245,8 @@ int	main(int ac, char **av, char **env)
 		{
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);
+			free_tab(set.cmd);
 		}
-		free_tab(set.cmd);
 		free(set.input);
 	}
 	free_tab(set.env);
