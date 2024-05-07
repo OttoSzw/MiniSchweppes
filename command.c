@@ -192,7 +192,7 @@ void	do_simple_command(t_set *set)
 		{
 			if (file_in)
 			{
-				fd = open(file_in, O_RDONLY, 0777);
+				fd = open(file_in, O_RDONLY);
 				if (fd == -1)
 					error_mess();
 				dup2(fd, STDIN_FILENO);
@@ -205,13 +205,13 @@ void	do_simple_command(t_set *set)
 		{
 			if (set->append == 1)
 			{
-				fd = open(file_out, O_WRONLY | O_CREAT | O_APPEND, 0777);
+				fd = open(file_out, O_WRONLY | O_CREAT | O_APPEND, 0644);
 				if (fd == -1)
 					error_mess();
 			}
 			else
 			{
-				fd = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+				fd = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				if (fd == -1)
 				{
 					error_mess();

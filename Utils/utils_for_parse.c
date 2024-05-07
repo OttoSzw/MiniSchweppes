@@ -16,7 +16,7 @@ char	*copy_normal(t_set *set)
 		if (set->input[i] == '\'' || set->input[i] == '\"')
 		{
 			i++;
-			while (set->input[i + 1] && (set->input[i] != '\'' || set->input[i] != '\"'))
+			while (set->input[i] && (set->input[i] != '\'' || set->input[i] != '\"'))
 			{
 				i++;
 				counter++;
@@ -42,7 +42,7 @@ char	*copy_normal(t_set *set)
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
 			i++;
-			while (set->input[i + 1] && (set->input[i] != '\'' || set->input[i] != '\"'))
+			while (set->input[i] && (set->input[i] != '\'' && set->input[i] != '\"'))
 				tempo[j++] = set->input[i++];
 		}
 		else
@@ -50,6 +50,7 @@ char	*copy_normal(t_set *set)
 	}
 	set->i = i;
 	tempo[j] = '\0';
+	// printf("tempo = %s\n", tempo);
 	return (tempo);
 }
 
@@ -80,15 +81,17 @@ char	*copy_quotes(t_set *set)
 			if (set->input[i + 1] && set->input[i + 1] == '$')
 				counter += 2;
 			i++;
-			while (set->input[i] != '\'')
+			while (set->input[i] && set->input[i] != '\'')
 			{
 				i++;
 				counter++;
+				if (set->input[i] == '\'')
+					i++;
 			}
 		}
 		i++;
 	}
-	// printf("la taille est de %d\n", counter);
+	printf("la taille est de %d\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	i = set->i;
 	block = i;
@@ -114,17 +117,31 @@ char	*copy_quotes(t_set *set)
 				tempo[j] = set->input[i];
 				i++;
 				j++;
-			}
-			while (set->input[i] && set->input[i] != '\'')
-			{
-				tempo[j] = set->input[i];
-				i++;
-				j++;
-				if (set->input[i] && set->input[i] == '\'')
+				while (set->input[i] && set->input[i] != '\'')
 				{
 					tempo[j] = set->input[i];
+					i++;
 					j++;
+					if (set->input[i] && set->input[i] == '\'')
+					{
+						tempo[j] = set->input[i];
+						j++;
+						i++;
+					}
 				}
+			}
+			else
+			{
+				i++;
+				while (set->input[i] && set->input[i] != '\'')
+				{
+					tempo[j] = set->input[i];
+					i++;
+					j++;
+					if (set->input[i] && set->input[i] == '\'')
+						i++;
+				}
+				i++;
 			}
 		}
 		i++;

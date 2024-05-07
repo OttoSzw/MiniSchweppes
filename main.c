@@ -238,11 +238,11 @@ int	main(int ac, char **av, char **env)
 			add_history(set.input);
 			set.i = 0;
 			set.cmd = parse(&set);
-			if (expand(&set) == 0)
-				break;
 		}
 		if (set.cmd)
 		{
+			if (expand(&set) == 0)
+				break;
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);
 			free_tab(set.cmd);

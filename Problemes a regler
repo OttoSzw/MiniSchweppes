@@ -1,0 +1,12 @@
+PARSING :
+
+MiniSchweppes > echo a$USERa
+tempo = echo
+tempo = a$USERa
+a$USERa
+
+echo a"$USER"a
+
+echo 'USER'aaaa
+
+cat Makefile  > banane > choco > home
