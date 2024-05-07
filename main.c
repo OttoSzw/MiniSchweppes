@@ -53,13 +53,13 @@ void	executable(t_set *set)
 	else if (ft_strcmp("pwd", set->cmd[0]) == 0)
 		pwd_command(set->cmd);
 	else if (ft_strcmp("env", set->cmd[0]) == 0)
-		env_command(set->cmd, set->env);
+		env_command(set->env);
 	else if (ft_strcmp("exit", set->cmd[0]) == 0)
-		exit_command(set->cmd[1], set->size_tab);
+		exit_command(set, set->cmd[1], set->size_tab);
 	else if (ft_strcmp("unset", set->cmd[0]) == 0)
 		unset_command(set, set->env);
 	else if (ft_strcmp("export", set->cmd[0]) == 0)
-		export_command(set, set->env);
+		export_command(set);
 	else
 	{
 		do_simple_command(set);
@@ -230,7 +230,8 @@ int	main(int ac, char **av, char **env)
 								">\1\033[0m ");
 		if (set.input == NULL)
 		{
-			break ;
+			free_tab(set.env);
+			return (0);
 		}
 		set.cmd = NULL;
 		if (ft_occurence(set.input) != ft_strlen(set.input))

@@ -78,7 +78,7 @@ char	**copy_of_tab(char **tab)
 	int		i;
 
 	i = 0;
-	size = tab_calculate(tab) + 1;
+	size = (tab_calculate(tab) + 1);
 	copy = (char **)ft_calloc(sizeof(char *), size);
 	if (!copy)
 		return (NULL);

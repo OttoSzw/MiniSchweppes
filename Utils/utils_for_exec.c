@@ -102,8 +102,10 @@ void	execute_command(char **av, char **env)
 		if (!path)
 		{
 			free_tab(cmd);
+			free_tab(env);
 			printf("bash : %s: command not found\n", av[0]);
-			return ;
+			free(av[0]);
+			exit(1);
 		}
 	}
 	if (execve(path, cmd, env) == -1)

@@ -64,12 +64,12 @@ typedef struct s_expand
 //	Builtins functions
 
 int			echo_command(char **s);
-int			env_command(char **s, char **env);
+int			env_command(char **env);
 int			pwd_command(char **s);
 int			cd_command(char *path);
-int			exit_command(char *s, int size);
+int			exit_command(t_set *set, char *s, int size);
 int			unset_command(t_set *set, char **env);
-int			export_command(t_set *set, char **env);
+int			export_command(t_set *set);
 
 //	Utils functions for tab
 

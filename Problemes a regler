@@ -9,4 +9,15 @@ echo a"$USER"a
 
 echo 'USER'aaaa
 
+
+
+
+EXEC :
+
 cat Makefile  > banane > choco > home
+
+conditional jump sur export solo
+
+exit qui marche pas quand command not found
+
+pwd oldpwd pas actualiser

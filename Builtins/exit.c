@@ -48,12 +48,17 @@ int	check_errors(char *s, long nb)
 	return (nb % 256);
 }
 
-int	exit_command(char *s, int size)
+int	exit_command(t_set *set, char *s, int size)
 {
 	long	nb;
 
 	if (!s)
+	{
+		free_tab(set->cmd);
+		free(set->input);
+		free_tab(set->env);
 		exit(0);
+	}
 	if (size > 2)
 	{
 		printf("too many arguments\n");
@@ -62,5 +67,8 @@ int	exit_command(char *s, int size)
 	nb = ft_atol(s);
 	printf("exit\n");
 	nb = check_errors(s, nb);
+	free_tab(set->cmd);
+	free(set->input);
+	free_tab(set->env);
 	exit(nb);
 }

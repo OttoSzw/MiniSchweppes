@@ -12,16 +12,15 @@
 
 #include "../minishell.h"
 
-int	env_command(char **s, char **env)
+int	env_command(char **env)
 {
-	char	**copy;
+	int	i;
 
-	copy = env;
-	s = env;
-	while (*s)
+	i = 0;
+	while (env[i])
 	{
-		printf("%s\n", *s);
-		s++;
+		printf("%s\n", env[i]);
+		i++;
 	}
 	return (0);
 }
