@@ -1,26 +1,20 @@
 PARSING :
 
-MiniSchweppes > echo a$USERa
-tempo = echo
-tempo = a$USERa
-a$USERa
-
 echo a"$USER"a
 
 echo 'USER'aaaa
 
-leak single quote
+leak single quote + invalid read
 
+$?
 
 
 EXEC :
 
-cat Makefile  > banane > choco > home
-
-redirection des builtins
-
 leaks sur les here_doc, avec pipes et sans.
 
-conditional jump sur export solo
+split du pipe a refaire au cas ou les pipe serait coller.
 
 pwd oldpwd pas actualiser
+
+Plusieurs redirections cat Makefile  > banane > choco > home

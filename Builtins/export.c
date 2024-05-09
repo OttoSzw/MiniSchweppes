@@ -2,8 +2,8 @@
 
 char	**ft_realloc(char **env, int size)
 {
-	char **env2;
-	int	i;
+	char	**env2;
+	int		i;
 
 	i = 0;
 	env2 = (char **)ft_calloc(sizeof(char *), (size + 2));
@@ -36,55 +36,42 @@ int	check_arg(char *str)
 	return (1);
 }
 
-void	insert_sorted(char **sorted_list, char *str)
+void	swap_strings(char **a, char **b)
+{
+	char	*temp;
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+void	sort_list_ascii(char **export_env)
 {
 	int	i;
 	int	j;
+	int	min_index;
 
 	i = 0;
-	while (sorted_list[i] && ft_strcmp(sorted_list[i], str) < 0)
-		i++;
-	j = i;
-	while (sorted_list[j])
-		j++;
-	while (j > i)
+	while (export_env[i])
 	{
-		sorted_list[j] = sorted_list[j - 1];
-		j--;
-	}
-	sorted_list[i] = str;
-}
-
-char **sort_list(char **export_env)
-{
-	int	size;
-	char **sorted_env;
-	int	i;
-
-	i = 0;
-	size = 0;
-	while (export_env[size])
-		size++;
-	sorted_env = malloc((size + 1) * sizeof(char *));
-	if (!sorted_env)
-	{
-		printf("Boum!!\n");
-		return (NULL);
-	}
-	sorted_env[0] = NULL;
-	while (i < size)
-	{
-		insert_sorted(sorted_env, export_env[i]);
+		min_index = i;
+		j = i + 1;
+		while (export_env[j])
+		{
+			if (ft_strcmp(export_env[j], export_env[min_index]) < 0)
+				min_index = j;
+			j++;
+			swap_strings(&export_env[min_index], &export_env[i]);
+		}
 		i++;
 	}
-	return (sorted_env);
 }
 
 int	success_find(char **env, char *tab2)
 {
-	char *str;
-	int i;
-	int size;
+	char	*str;
+	int		i;
+	int		size;
 
 	i = 0;
 	size = 0;
@@ -115,9 +102,9 @@ int	success_find(char **env, char *tab2)
 int	export_command(t_set *set)
 {
 	char **export_env;
-	int	i;
+	int i;
 	int j;
-	int	size;
+	int size;
 
 	i = 0;
 	j = 0;
@@ -125,7 +112,7 @@ int	export_command(t_set *set)
 	if (set->cmd[0] && !set->cmd[1])
 	{
 		export_env = copy_of_tab(set->env);
-		export_env = sort_list(export_env);
+		sort_list_ascii(export_env);
 		print_tab(export_env);
 		free_tab(export_env);
 		return (0);

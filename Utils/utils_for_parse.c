@@ -2,10 +2,10 @@
 
 char	*copy_normal(t_set *set)
 {
-	int	i;
-	int j;
-	int	counter;
-	char *tempo;
+	int		i;
+	int		j;
+	int		counter;
+	char	*tempo;
 
 	i = set->i;
 	// printf("ouen est i : %d\n", set->i);
@@ -16,13 +16,15 @@ char	*copy_normal(t_set *set)
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
 			i++;
-			while (set->input[i] && (set->input[i] != '\'' && set->input[i] != '\"'))
+			while (set->input[i] && (set->input[i] != '\''
+					&& set->input[i] != '\"'))
 			{
 				counter++;
 				i++;
 			}
 		}
-		else if (set->input[i] != '\0' && (set->input[i] != '\'' && set->input[i] != '\"'))
+		else if (set->input[i] != '\0' && (set->input[i] != '\''
+				&& set->input[i] != '\"'))
 		{
 			counter++;
 		}
@@ -43,10 +45,12 @@ char	*copy_normal(t_set *set)
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
 			i++;
-			while (set->input[i] && (set->input[i] != '\'' && set->input[i] != '\"'))
+			while (set->input[i] && (set->input[i] != '\''
+					&& set->input[i] != '\"'))
 				tempo[j++] = set->input[i++];
 		}
-		else if (set->input[i] != '\0' && (set->input[i] != '\'' && set->input[i] != '\"'))
+		else if (set->input[i] != '\0' && (set->input[i] != '\''
+				&& set->input[i] != '\"'))
 			tempo[j++] = set->input[i];
 		i++;
 	}
@@ -58,11 +62,11 @@ char	*copy_normal(t_set *set)
 
 char	*copy_quotes(t_set *set)
 {
-	int	i;
-	int	j;
-	int	block;
-	int	counter;
-	char *tempo;
+	int		i;
+	int		j;
+	int		block;
+	int		counter;
+	char	*tempo;
 
 	i = set->i;
 	j = 0;
@@ -87,13 +91,14 @@ char	*copy_quotes(t_set *set)
 			{
 				i++;
 				counter++;
-				if (set->input[i] && set->input[i] == '\'')
+				if (set->input[i] && (set->input[i] == '\'' && set->input[i
+						+ 1] != ' '))
 					i++;
 			}
 		}
 		i++;
 	}
-	// printf("la taille est de %d\n", counter);
+	printf("la taille est de %d\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	i = set->i;
 	block = i;
@@ -130,6 +135,12 @@ char	*copy_quotes(t_set *set)
 						j++;
 						i++;
 					}
+					if (set->input[i] == ' ')
+					{
+						set->i = i;
+						tempo[j] = '\0';
+						return (tempo);
+					}
 				}
 			}
 			else
@@ -140,8 +151,15 @@ char	*copy_quotes(t_set *set)
 					tempo[j] = set->input[i];
 					i++;
 					j++;
-					if (set->input[i] && set->input[i] == '\'')
+					if (set->input[i] && (set->input[i] == '\'' && set->input[i
+							+ 1] != ' '))
 						i++;
+					if (set->input[i] == ' ')
+					{
+						set->i = i;
+						tempo[j] = '\0';
+						return (tempo);
+					}
 				}
 				i++;
 			}
@@ -179,8 +197,10 @@ int	check_quotes(t_set *set)
 
 char	**parse(t_set *set)
 {
-	int	i;
-	int	counter;
+	int		i;
+	int		counter;
+	char	**split;
+	int		g;
 
 	i = 0;
 	counter = 0;
@@ -192,7 +212,7 @@ char	**parse(t_set *set)
 	while (set->input[i])
 	{
 		while (set->input[i] == ' ')
-				i++;
+			i++;
 		if (set->input[i] == '\'')
 		{
 			i++;
@@ -228,12 +248,9 @@ char	**parse(t_set *set)
 			}
 		}
 		while (set->input[i] == ' ')
-				i++;
+			i++;
 	}
 	// printf("Le nombre de mot est : %d\n", counter);
-	char **split;
-	int	g;
-
 	g = 0;
 	if (counter == 0)
 		return (NULL);
@@ -281,16 +298,16 @@ char	**parse(t_set *set)
 
 size_t	ft_occurence(char *s)
 {
-	int	i;
-	size_t	compteur;
+	int i;
+	size_t compteur;
 
-	i = 0;	
+	i = 0;
 	compteur = 0;
 	if (!s)
 		return (0);
 	while (s[i] != '\0')
 	{
-		if ((s[i] >= 9 && s[i] <= 13 )|| s[i] == ' ' || s[i] == '\t')
+		if ((s[i] >= 9 && s[i] <= 13) || s[i] == ' ' || s[i] == '\t')
 			compteur++;
 		i++;
 	}
