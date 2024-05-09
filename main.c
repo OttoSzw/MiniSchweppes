@@ -47,19 +47,19 @@ void	executable(t_set *set)
 	if (check_pipe(set))
 		parse_for_pipe(set);
 	else if (ft_strcmp("echo", set->cmd[0]) == 0)
-		echo_command(set->cmd + 1);
+		set->return_value = echo_command(set->cmd + 1);
 	else if (ft_strcmp("cd", set->cmd[0]) == 0)
-		cd_command(set->cmd[1]);
+		set->return_value = cd_command(set->cmd[1]);
 	else if (ft_strcmp("pwd", set->cmd[0]) == 0)
-		pwd_command(set->cmd);
+		set->return_value = pwd_command(set->cmd);
 	else if (ft_strcmp("env", set->cmd[0]) == 0)
-		env_command(set->env);
+		set->return_value = env_command(set->env);
 	else if (ft_strcmp("exit", set->cmd[0]) == 0)
-		exit_command(set, set->cmd[1], set->size_tab);
+		set->return_value = exit_command(set, set->cmd[1], set->size_tab);
 	else if (ft_strcmp("unset", set->cmd[0]) == 0)
-		unset_command(set, set->env);
+		set->return_value = unset_command(set, set->env);
 	else if (ft_strcmp("export", set->cmd[0]) == 0)
-		export_command(set);
+		set->return_value = export_command(set);
 	else
 	{
 		do_simple_command(set);
@@ -115,7 +115,6 @@ void	command(char **c, t_set *set)
 		}
 		cmd = copy_tabcmd(c);
 		execute_command(cmd, set->env);
-		free_tab(cmd);
 	}
 	else
 	{
@@ -220,6 +219,7 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	i = 0;
 	set.env = copy_of_tab(env);
+	set.return_value = 0;
 	while (1)
 	{
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"

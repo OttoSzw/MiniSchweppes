@@ -119,6 +119,11 @@ int	expand(t_set *set)
 				return (1);
 			else if (set->cmd[i][j] == '$')
 			{
+				if (set->cmd[i][j + 1] == '?')
+				{
+					printf("La valeur de retour de l ancienne commande est : %d\n", set->return_value);
+					return (1);
+				}
 				if (expand_arg(set, i) == 0)
 					return (0);
 			}

@@ -108,6 +108,7 @@ void	here_doc(char *limiter)
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
 		wait(NULL);
 	}
 }

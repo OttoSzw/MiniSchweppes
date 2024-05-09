@@ -51,6 +51,7 @@ typedef struct s_set
 	int		index;
 	int		dq;
 	int		sq;
+	int		return_value;
 }			t_set;
 
 typedef struct s_expand

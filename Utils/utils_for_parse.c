@@ -11,23 +11,24 @@ char	*copy_normal(t_set *set)
 	// printf("ouen est i : %d\n", set->i);
 	j = 0;
 	counter = 0;
-	while (set->input[i] != ' ' && set->input[i] != '\0')
+	while (set->input[i] != '\0' && set->input[i] != ' ')
 	{
-		if (set->input[i] == '\'' || set->input[i] == '\"')
+		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
 			i++;
-			while (set->input[i] && (set->input[i] != '\'' || set->input[i] != '\"'))
+			while (set->input[i] && (set->input[i] != '\'' && set->input[i] != '\"'))
 			{
-				i++;
 				counter++;
+				i++;
 			}
 		}
-		else //if (set->input[i] != '\0' && (set->input[i] != '\'' && set->input[i] != '\"'))
+		else if (set->input[i] != '\0' && (set->input[i] != '\'' && set->input[i] != '\"'))
 		{
 			counter++;
-			i++;
 		}
+		i++;
 	}
+	// printf("1\n");
 	// printf("la taille est de %d\n\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	if (!tempo)
@@ -37,7 +38,7 @@ char	*copy_normal(t_set *set)
 	i = set->i;
 	while (set->input[i] == ' ')
 		i++;
-	while (set->input[i] && set->input[i] != ' ' && set->input[i] != '\0')
+	while (set->input[i] != '\0' && set->input[i] && set->input[i] != ' ')
 	{
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
@@ -45,8 +46,9 @@ char	*copy_normal(t_set *set)
 			while (set->input[i] && (set->input[i] != '\'' && set->input[i] != '\"'))
 				tempo[j++] = set->input[i++];
 		}
-		else
-			tempo[j++] = set->input[i++];
+		else if (set->input[i] != '\0' && (set->input[i] != '\'' && set->input[i] != '\"'))
+			tempo[j++] = set->input[i];
+		i++;
 	}
 	set->i = i;
 	tempo[j] = '\0';
@@ -85,13 +87,13 @@ char	*copy_quotes(t_set *set)
 			{
 				i++;
 				counter++;
-				if (set->input[i] == '\'')
+				if (set->input[i] && set->input[i] == '\'')
 					i++;
 			}
 		}
 		i++;
 	}
-	printf("la taille est de %d\n", counter);
+	// printf("la taille est de %d\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	i = set->i;
 	block = i;
@@ -263,6 +265,7 @@ char	**parse(t_set *set)
 		}
 		// printf("Le tab g%d: %s\n", g, split[g]);
 		// set->i += 1;
+		i++;
 		g++;
 	}
 	// printf("%d\n", g);
