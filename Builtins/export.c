@@ -27,9 +27,13 @@ int	check_arg(char *str)
 	int	i;
 
 	i = 0;
-	while (str[i] != '=')
+	if (str[i] == '=')
+		return (0);
+	while (str[i])
 	{
-		if (str[i] > '0' && str[i] < '9')
+		if (str[i] == '=')
+			return (1);
+		if (!((str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')))
 			return (0);
 		i++;
 	}
@@ -131,7 +135,8 @@ int	export_command(t_set *set)
 		}
 		else
 		{
-			printf("'%s' : not a valid identifier\n", set->cmd[i]);
+			ft_putendl_fd(" not a valid identifier\n", 2);
+			return (1);
 		}
 		i++;
 	}

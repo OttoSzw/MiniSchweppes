@@ -1,3 +1,4 @@
+
 #include "../minishell.h"
 
 int	new_cmd(t_set *set, int nb, t_expand *expand)
@@ -5,12 +6,14 @@ int	new_cmd(t_set *set, int nb, t_expand *expand)
 	char	*newcmd;
 	char	*tmp;
 
-	if (expand->before)
+	if (expand->before && expand->expand)
 		tmp = ft_strjoin(expand->before, expand->expand);
+	else if (expand->before)
+		tmp = ft_strdup(expand->before);
 	else
 		tmp = ft_strdup(expand->expand);
 	if (!tmp)
-		return (0);
+		return (free_cmd(set, nb), 0);
 	if (expand->after)
 		newcmd = ft_strjoin(tmp, expand->after);
 	else
@@ -26,29 +29,20 @@ int	new_cmd(t_set *set, int nb, t_expand *expand)
 		return (0);
 	return (1);
 }
-
 int	new_arg(t_set *set, int nb, t_expand *expand)
 {
-	char	*tmp;
 	char	*variable;
 	int		i;
 
 	i = 0;
-	tmp = ft_strtrim(expand->expand, "/$");
-	// printf("%s\n", tmp);
-	if (!tmp)
-		return (0);
-	variable = ft_strjoin(tmp, "=");
-	free(tmp);
+	variable = prep_variable(expand);
 	if (!variable)
 		return (0);
 	while (set->env[i])
 	{
 		if (ft_strncmp(variable, set->env[i], env_len(set->env[i])) == 0)
 		{
-			free(expand->expand);
-			expand->expand = ft_substr(set->env[i], ft_strlen(variable),
-					(ft_strlen(set->env[i]) - ft_strlen(variable)));
+			replace_expand(set, i, expand, variable);
 			free(variable);
 			if (!expand->expand)
 				return (0);
@@ -58,9 +52,10 @@ int	new_arg(t_set *set, int nb, t_expand *expand)
 		}
 		i++;
 	}
-	// printf("1\n");
-	free(variable);
-	return (1);
+	free(expand->expand);
+	expand->expand = NULL;
+	new_cmd(set, nb, expand);
+	return (free(variable), 1);
 }
 
 int	expand_arg(t_set *set, int nb)
@@ -81,26 +76,40 @@ int	expand_arg(t_set *set, int nb)
 	if (!tmp)
 		return (0);
 	i = 0;
-	while (tmp[i] == '$')
+	while (tmp[i] && (tmp[i] == '$' || (tmp[i] >= 'A' && tmp[i] <= 'Z')
+			|| (tmp[i] >= 'a' && tmp[i] <= 'z') || tmp[i] == '_'))
 		i++;
-	while ((tmp[i] >= 'A' && tmp[i] <= 'Z') || (tmp[i] >= 'a' && tmp[i] <= 'z')
-		|| tmp[i] == '_')
-		i++;
-	expand.expand = copy_str(tmp, i);
-	if (!expand.expand)
+	if (expand_after(tmp, i, &expand) == 0)
 		return (free(tmp), 0);
-	if (tmp[i])
-	{
-		expand.after = ft_substr(tmp, i, (ft_strlen(tmp)
-					- ft_strlen(expand.expand)));
-		if (!expand.after)
-		{
-			return (0);
-		}
-	}
 	free(tmp);
 	if (new_arg(set, nb, &expand) == 0)
 		return (free_expand(&expand), 0);
+	return (1);
+}
+
+int	expand_quote(t_set *set, int nb)
+{
+	int		i;
+	char	*tmp;
+
+	tmp = ft_strtrim(set->cmd[nb], "\'");
+	if (!tmp)
+		return (0);
+	free(set->cmd[nb]);
+	set->cmd[nb] = ft_substr(tmp, 0, ft_strlen(tmp));
+	free(tmp);
+	if (!set->cmd[nb])
+		return (0);
+	i = 0;
+	while (set->cmd[nb][i])
+	{
+		if (set->cmd[nb][i] == '\'')
+		{
+			if (remove_quote(set, nb) == 0)
+				return (0);
+		}
+		i++;
+	}
 	return (1);
 }
 
@@ -113,18 +122,22 @@ int	expand(t_set *set)
 	while (set->cmd[i])
 	{
 		j = 0;
-		while (set->cmd[i][j])
+		while (set->cmd[i] && set->cmd[i][j])
 		{
-			if (set->cmd[i][j] == '\'' && set->cmd[i][j + 1] == '$')
-				return (1);
+			if (set->cmd[i][j] == '\'')
+			{
+				if (expand_quote(set, i) == 0)
+					return (0);
+				break ;
+			}
 			else if (set->cmd[i][j] == '$')
 			{
 				if (set->cmd[i][j + 1] == '?')
 				{
-					printf("La valeur de retour de l ancienne commande est : %d\n", set->return_value);
-					return (1);
+					if (expand_return(set, i) == 0)
+						return (0);
 				}
-				if (expand_arg(set, i) == 0)
+				else if (expand_arg(set, i) == 0)
 					return (0);
 			}
 			j++;

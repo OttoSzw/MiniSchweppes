@@ -12,41 +12,29 @@
 
 #include "minishell.h"
 
-// void	do_simple_command(t_set *set)
-// {
-// 	int	id;
-
-// 	id = fork();
-// 	if (id == 0)
-// 	{
-// 		execute_command(set->cmd, set->env);
-// 	}
-// 	while (wait(NULL) != -1)
-// 		continue ;
-// }
-
-int	check_pipe(t_set *set)
+int	yes_or_no_builtins(t_set *set)
 {
-	int	i;
-
-	i = 0;
-	while (set->cmd[i])
-	{
-		if (ft_strcmp(set->cmd[i], "|") == 0)
-			return (1);
-		i++;
-	}
-	return (0);
+	if (ft_strcmp("echo", set->cmd[0]) == 0)
+		return (1);
+	else if (ft_strcmp("cd", set->cmd[0]) == 0)
+		return (1);
+	else if (ft_strcmp("pwd", set->cmd[0]) == 0)
+		return (1);
+	else if (ft_strcmp("env", set->cmd[0]) == 0)
+		return (1);
+	else if (ft_strcmp("exit", set->cmd[0]) == 0)
+		return (1);
+	else if (ft_strcmp("unset", set->cmd[0]) == 0)
+		return (1);
+	else if (ft_strcmp("export", set->cmd[0]) == 0)
+		return (1);
+	else
+		return (0);
 }
 
-void	executable(t_set *set)
+void	do_builtins(t_set *set)
 {
-	int	j;
-
-	j = 0;
-	if (check_pipe(set))
-		parse_for_pipe(set);
-	else if (ft_strcmp("echo", set->cmd[0]) == 0)
+	if (ft_strcmp("echo", set->cmd[0]) == 0)
 		set->return_value = echo_command(set->cmd + 1);
 	else if (ft_strcmp("cd", set->cmd[0]) == 0)
 		set->return_value = cd_command(set->cmd[1]);
@@ -60,11 +48,19 @@ void	executable(t_set *set)
 		set->return_value = unset_command(set, set->env);
 	else if (ft_strcmp("export", set->cmd[0]) == 0)
 		set->return_value = export_command(set);
-	else
-	{
-		do_simple_command(set);
-	}
 }
+
+void	executable(t_set *set)
+{
+	int	j;
+
+	j = 0;
+	if (check_pipe(set))
+		parse_for_pipe(set);
+	else
+		do_simple_command(set);
+}
+
 
 void	command(char **c, t_set *set)
 {	
@@ -122,92 +118,6 @@ void	command(char **c, t_set *set)
 	}
 }
 
-void	exec_multiple_pipe(char ***c, t_set *set, int size)
-{
-	int	i;
-	int	pipe_fd[2];
-	int	id;
-
-	init_fd(set);
-	i = 0;
-	while (i < size)
-	{
-		if (pipe(pipe_fd) == -1)
-			error_mess();
-		id = fork();
-		if (id == -1)
-			error_mess();
-		if (id == 0)
-		{
-			if (i == 0)
-			{
-				dup2(pipe_fd[1], STDOUT_FILENO);
-				close(pipe_fd[1]);
-				close(pipe_fd[0]);
-				close(set->saved_in);
-				close(set->saved_out);
-				command(c[i], set);
-			}
-			else if (i == (size - 1))
-			{
-				// dup2(pipe_fd[1], STDOUT_FILENO);
-				close(pipe_fd[1]);
-				close(pipe_fd[0]);
-				close(set->saved_in);
-				close(set->saved_out);
-				command(c[i], set);
-			}
-			else
-			{
-				dup2(pipe_fd[1], STDOUT_FILENO);
-				close(pipe_fd[1]);
-				close(pipe_fd[0]);
-				close(set->saved_in);
-				close(set->saved_out);
-				command(c[i], set);
-			}
-		}
-		else
-		{
-			dup2(pipe_fd[0], STDIN_FILENO);
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
-		}
-		i++;
-	}
-	reset_fd(set);
-	while (wait(NULL) != -1)
-		continue ;
-}
-
-void	parse_for_pipe(t_set* set)
-{
-	char ***c;
-	int	nb_arg;
-	// int	i;
-	// int j;
-
-	// i = 0;
-	// j = 0;
-	c = copy_of_tab_of_tab(set, set->cmd);
-	nb_arg = count_cmdpipe(set->cmd);
-	// while (c[i])
-	// {
-	// 	printf("\nCase %d :\n", i);
-	// 	j = 0;
-	// 	while (c[i][j])
-	// 	{
-	// 		printf("-> : %s\n", c[i][j]);
-	// 		j++;
-	// 	}
-	// 	i++;
-	// }
-	exec_multiple_pipe(c, set, nb_arg);
-	free_tab(c[0]);
-	free_tab(c[1]);
-	free(c);
-}
-
 int	main(int ac, char **av, char **env)
 {
 	t_set	set;
@@ -220,6 +130,7 @@ int	main(int ac, char **av, char **env)
 	i = 0;
 	set.env = copy_of_tab(env);
 	set.return_value = 0;
+	set.expand = 0;
 	while (1)
 	{
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
@@ -242,8 +153,11 @@ int	main(int ac, char **av, char **env)
 		}
 		if (set.cmd)
 		{
-			if (expand(&set) == 0)
-				break;
+			if (set.expand == 1)
+			{
+				if (expand(&set) == 0)
+					break;
+			}
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);
 			free_tab(set.cmd);

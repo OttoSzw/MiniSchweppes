@@ -38,3 +38,30 @@ void	free_expand(t_expand *expand)
 	if (expand->after)
 		free(expand->after);
 }
+
+int	remove_quote(t_set *set, int nb)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = 0;
+	j = 0;
+	tmp = malloc(sizeof(char) * (ft_strlen(set->cmd[nb]) + 1));
+	if (!tmp)
+		return (0);
+	while (set->cmd[nb][i])
+	{
+		while (set->cmd[nb][i] && set->cmd[nb][i] != '\'')
+			tmp[j++] = set->cmd[nb][i++];
+		if (set->cmd[nb][i])
+			i++;
+	}
+	tmp[j] = '\0';
+	free(set->cmd[nb]);
+	set->cmd[nb] = ft_substr(tmp, 0, ft_strlen(tmp));
+	free(tmp);
+	if (!set->cmd[nb])
+		return (0);
+	return (1);
+}

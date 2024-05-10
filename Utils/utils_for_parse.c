@@ -15,6 +15,11 @@ char	*copy_normal(t_set *set)
 	{
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
+			if (set->input[i] == '\'' && (set->input[i + 1] && set->input[i + 1] == '$'))
+			{
+				set->expand = 1;
+				counter += 2;
+			}
 			i++;
 			while (set->input[i] && (set->input[i] != '\''
 					&& set->input[i] != '\"'))
@@ -26,6 +31,8 @@ char	*copy_normal(t_set *set)
 		else if (set->input[i] != '\0' && (set->input[i] != '\''
 				&& set->input[i] != '\"'))
 		{
+			if (set->input[i] == '$' && set->input[i + 1])
+				set->expand = 1;
 			counter++;
 		}
 		i++;
@@ -42,82 +49,13 @@ char	*copy_normal(t_set *set)
 		i++;
 	while (set->input[i] != '\0' && set->input[i] && set->input[i] != ' ')
 	{
-		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
+		if (set->input[i] && set->input[i] == '\"')
 		{
 			i++;
-			while (set->input[i] && (set->input[i] != '\''
-					&& set->input[i] != '\"'))
+			while (set->input[i] && set->input[i] != '\"')
 				tempo[j++] = set->input[i++];
 		}
-		else if (set->input[i] != '\0' && (set->input[i] != '\''
-				&& set->input[i] != '\"'))
-			tempo[j++] = set->input[i];
-		i++;
-	}
-	set->i = i;
-	tempo[j] = '\0';
-	// printf("tempo = %s\n", tempo);
-	return (tempo);
-}
-
-char	*copy_quotes(t_set *set)
-{
-	int		i;
-	int		j;
-	int		block;
-	int		counter;
-	char	*tempo;
-
-	i = set->i;
-	j = 0;
-	counter = 0;
-	while (set->input[i])
-	{
-		if (set->input[i] == '\"')
-		{
-			i++;
-			while (set->input[i] != '\"')
-			{
-				i++;
-				counter++;
-			}
-		}
-		else if (set->input[i] == '\'')
-		{
-			if (set->input[i + 1] && set->input[i + 1] == '$')
-				counter += 2;
-			i++;
-			while (set->input[i] && set->input[i] != '\'')
-			{
-				i++;
-				counter++;
-				if (set->input[i] && (set->input[i] == '\'' && set->input[i
-						+ 1] != ' '))
-					i++;
-			}
-		}
-		i++;
-	}
-	printf("la taille est de %d\n", counter);
-	tempo = malloc(sizeof(char) * (counter + 1));
-	i = set->i;
-	block = i;
-	// printf("Indice = %d\n", set->i);
-	// printf("Counter = %d\n", counter);
-	// printf("block = %d\n", block);
-	while (set->input[i] && i <= (counter + block))
-	{
-		if (set->input[i] == '\"')
-		{
-			i++;
-			while (set->input[i] != '\"')
-			{
-				tempo[j] = set->input[i];
-				i++;
-				j++;
-			}
-		}
-		else if (set->input[i] == '\'')
+		else if (set->input[i] && set->input[i] == '\'')
 		{
 			if (set->input[i + 1] && set->input[i + 1] == '$')
 			{
@@ -161,11 +99,153 @@ char	*copy_quotes(t_set *set)
 						return (tempo);
 					}
 				}
-				i++;
+				if (set->input[i])
+					i++;
 			}
 		}
+		else if (set->input[i] != '\0' && (set->input[i] != '\''
+				&& set->input[i] != '\"'))
+			tempo[j++] = set->input[i];
+		if (set->input[i])
+			i++;
+	}
+	set->i = i;
+	tempo[j] = '\0';
+	// printf("tempo = %s\n", tempo);
+	return (tempo);
+}
+
+int	check_dollar(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$' && str[i + 1] != '\"') 
+			return (1);
 		i++;
 	}
+	return (0);
+}
+
+char	*copy_quotes(t_set *set)
+{
+	int		i;
+	int		j;
+	int		block;
+	int		counter;
+	char	*tempo; 
+
+	i = set->i;
+	j = 0;
+	counter = 0;
+	while (set->input[i])
+	{
+		if (set->input[i] == '\"')
+		{
+			if (check_dollar(set->input))
+			{
+				set->expand = 1;
+			}
+			i++;
+			while (set->input[i] != '\"')
+			{
+				i++;
+				counter++;
+			}
+		}
+		else if (set->input[i] == '\'')
+		{
+			if (set->input[i + 1] && set->input[i + 1] == '$')
+			{
+				counter += 2;
+				set->expand = 1;
+			}
+			i++;
+			while (set->input[i] && set->input[i] != '\'')
+			{
+				i++;
+				counter++;
+				if (set->input[i] && (set->input[i] == '\'' && set->input[i
+						+ 1] != ' '))
+					i++;
+			}
+		}
+		if (set->input[i])
+			i++;
+	}
+	// printf("la taille est de %d\n", counter);
+	tempo = malloc(sizeof(char) * (counter + 1));
+	i = set->i;
+	block = i;
+	// printf("Indice = %d\n", set->i);
+	// printf("Counter = %d\n", counter);
+	// printf("block = %d\n", block);
+	while (set->input[i] && i <= (counter + block))
+	{
+		if (set->input[i] == '\"')
+		{
+			i++;
+			while (set->input[i] != '\"')
+			{
+				tempo[j] = set->input[i];
+				i++;
+				j++;
+			}
+		}
+		else if (set->input[i] == '\'')
+		{
+			if (set->input[i + 1] && set->input[i + 1] == '$')
+			{
+				tempo[j] = set->input[i];
+				i++;
+				j++;
+				while (set->input[i] && set->input[i] != '\'')
+				{
+					tempo[j] = set->input[i];
+					i++;
+					j++;
+					if (set->input[i] && set->input[i] == '\'')
+					{
+						tempo[j] = set->input[i];
+						j++;
+						i++;
+					}
+					// if (set->input[i] == ' ')
+					// {
+					// 	set->i = i;
+					// 	tempo[j] = '\0';
+					// 	return (tempo);
+					// }
+				}
+			}
+			else
+			{
+				i++;
+				while (set->input[i] && set->input[i] != '\'')
+				{
+					tempo[j] = set->input[i];
+					i++;
+					j++;
+					if (set->input[i] && (set->input[i] == '\'' && set->input[i
+							+ 1] != ' '))
+						i++;
+					// if (set->input[i] == ' ')
+					// {
+					// 	set->i = i;
+					// 	tempo[j] = '\0';
+					// 	return (tempo);
+					// }
+				}
+				if (set->input[i])
+					i++;
+			}
+		}
+		if (set->input[i])
+			i++;
+	}
+	// printf("%d\n", i);
 	set->i = i;
 	// printf("Indice = %d\n", set->i);
 	// printf("Counter = %d\n", counter);

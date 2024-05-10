@@ -52,6 +52,7 @@ typedef struct s_set
 	int		dq;
 	int		sq;
 	int		return_value;
+	int		expand;
 }			t_set;
 
 typedef struct s_expand
@@ -78,6 +79,7 @@ void		free_tab(char **s);
 int			tab_calculate(char **s);
 char		**copy_of_tab(char **tab);
 int			tab_calculate_no_pipe(char **s);
+void		print_tab(char **cmd);
 
 //	Utils functions for execution
 
@@ -95,6 +97,9 @@ int			check_redirections(char **av);
 int			check_append(char **cmd);
 int			count_cmdpipe(char **av);
 char		**copy_tabcmd(char **cmd);
+void		do_builtins(t_set *set);
+int			yes_or_no_builtins(t_set *set);
+void		command(char **c, t_set *set);
 
 //	Utils functions for parsing
 
@@ -111,6 +116,27 @@ char		*copy_str(char *str, int size);
 int			env_len(char *str);
 void		free_expand(t_expand *expand);
 void		init_expand(t_expand *expand);
+int			remove_quote(t_set *set, int nb);
+int			expand_return(t_set *set, int nb);
+char		*prep_variable(t_expand *expand);
+void		replace_expand(t_set *set, int i, t_expand *expand, char *variable);
+void		free_cmd(t_set *set, int nb);
+int			expand_after(char *tmp, int i, t_expand *expand);
+int			expand_quote(t_set *set, int nb);
+
+// Utils for Files
+int			check_append(char **cmd);
+int			check_redirections(char **av);
+char		*find_file_out(char **cmd);
+char		*find_file_in(char **cmd);
+int			count_nb_files(char **av);
+char		*find_file_out2(t_set *set, char **cmd);
+
+// Utils for Pipe
+
+int			check_pipe(t_set *set);
+void		exec_multiple_pipe(char ***c, t_set *set, int size);
+void		parse_for_pipe(t_set *set);
 
 // Utils for Pipex
 

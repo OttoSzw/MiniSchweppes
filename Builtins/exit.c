@@ -30,17 +30,17 @@ int	check_errors(char *s, long nb)
 {
 	if (ft_strlen(s) == 19 && ft_strcmp(s, "9223372036854775807") != 0)
 	{
-		printf("numeric argument required\n");
+		ft_putendl_fd("numeric argument required\n", 2);
 		return (2);
 	}
 	if (ft_strlen(s) >= 20 && ft_strcmp(s, "-9223372036854775808") != 0)
 	{
-		printf("numeric argument required\n");
+		ft_putendl_fd("numeric argument required\n", 2);
 		return (2);
 	}
 	if (is_num(s) == 1)
 	{
-		printf("numeric argument required\n");
+		ft_putendl_fd(" numeric argument required\n", 2);
 		return (2);
 	}
 	if (nb < 0 && nb > -255)
@@ -61,7 +61,7 @@ int	exit_command(t_set *set, char *s, int size)
 	}
 	if (size > 2)
 	{
-		printf("too many arguments\n");
+		ft_putendl_fd(" too many arguments\n", 2);
 		return (1);
 	}
 	nb = ft_atol(s);

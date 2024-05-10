@@ -12,6 +12,68 @@
 
 #include "../minishell.h"
 
+int	get_next_line2(char **line)
+{
+	char	*buffer;
+	int		i;
+	int		r;
+	char	c;
+
+	i = 0;
+	r = 0;
+	buffer = (char *)calloc(10000, 1);
+	if (!buffer)
+		return (-1);
+	r = read(0, &c, 1);
+	while (r && c != '\n' && c != '\0')
+	{
+		if (c != '\n' && c != '\0')
+			buffer[i] = c;
+		i++;
+		r = read(0, &c, 1);
+	}
+	buffer[++i] = '\0';
+	*line = buffer;
+	return (r);
+}
+
+void	here_doc(char *limiter)
+{
+	pid_t	reader;
+	int		fd[2];
+	char	*line;
+
+	// if (ac < 6)
+	// 	invalid_arguments2();
+	if (pipe(fd) == -1)
+		error_mess();
+	reader = fork();
+	if (reader == 0)
+	{
+		close(fd[0]);
+		while (get_next_line2(&line))
+		{
+			if (ft_strcmp(line, limiter) == 0)
+			{
+				free(line);
+				close(fd[1]);
+				exit(EXIT_SUCCESS);
+			}
+			ft_putendl_fd(line, fd[1]);
+			free(line);
+		}
+		close(fd[1]);
+		exit(1);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
+		wait(NULL);
+	}
+}
+
 void	free_paths(char **split)
 {
 	int	i;
@@ -36,11 +98,12 @@ void	error_cmd(void)
 
 int	error_mess(void)
 {
-	char	*s;
+	// char	*s;
 
-	s = "Error";
-	perror(s);
-	return (EXIT_FAILURE);
+	// s = "Error";
+	// printf("1\n");
+	perror(NULL);
+	exit (EXIT_FAILURE);
 }
 
 char	*find_path(char *cmd, char **env)
@@ -94,7 +157,9 @@ void	execute_command(char **av, char **env)
 	{
 		path = ft_strdup(cmd[0]);
 		if (!path)
-			escape(path);
+		{
+	 		escape(path);
+		}
 	}
 	else
 	{
@@ -104,10 +169,11 @@ void	execute_command(char **av, char **env)
 			free_tab(cmd);
 			free_tab(env);
 			printf("bash : %s: command not found\n", av[0]);
-			free(av[0]);
 			exit(1);
 		}
 	}
 	if (execve(path, cmd, env) == -1)
+	{
 		escape(path);
+	}
 }

@@ -34,6 +34,11 @@ int	cd_command(char *path)
 			perror("chdir() error");
 			return (1);
 		}
+		else
+		{
+			ft_putendl_fd(" too many arguments\n", 2);
+			return (1);
+		}
 	}
 	return (0);
 }

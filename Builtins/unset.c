@@ -3,24 +3,29 @@
 int	unset_command(t_set *set, char **env)
 {
 	int	i;
+	int	j;
 
-	i = 0;
-	if (!set->cmd[1])
+	j = 1;
+	if (!set->cmd[j])
 		return (0);
-	while (env[i])
+	while (j < tab_calculate(set->cmd))
 	{
-		if (ft_strncmp(set->cmd[1], env[i], ft_strlen(set->cmd[1])) == 0)
+		i = 0;
+		while (env[i])
 		{
-			free(env[i]);
-			while (env[i + 1])
+			if (ft_strncmp(set->cmd[j], env[i], ft_strlen(set->cmd[j])) == 0)
 			{
-				env[i] = env[i + 1];
-				i++;
+				free(env[i]);
+				while (env[i + 1])
+				{
+					env[i] = env[i + 1];
+					i++;
+				}
+				env[i] = NULL;
 			}
-			env[i] = NULL;
-			return (0);
+			i++;
 		}
-		i++;
+		j++;
 	}
 	return (0);
 }
