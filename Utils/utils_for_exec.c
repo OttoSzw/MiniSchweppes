@@ -37,7 +37,7 @@ int	get_next_line2(char **line)
 	return (r);
 }
 
-void	here_doc(char *limiter)
+void	here_doc(t_set *set, char *limiter)
 {
 	pid_t	reader;
 	int		fd[2];
@@ -57,6 +57,9 @@ void	here_doc(char *limiter)
 			{
 				free(line);
 				close(fd[1]);
+				free_tab(set->cmd);
+				free_tab(set->env);
+				reset_fd(set);
 				exit(EXIT_SUCCESS);
 			}
 			ft_putendl_fd(line, fd[1]);
@@ -139,7 +142,7 @@ void	escape(char *path)
 	error_mess();
 }
 
-void	execute_command(char **av, char **env)
+void	execute_command(t_set* set, char **av, char **env)
 {
 	char	**cmd;
 	char	*path;
@@ -169,11 +172,16 @@ void	execute_command(char **av, char **env)
 			free_tab(cmd);
 			free_tab(env);
 			printf("bash : %s: command not found\n", av[0]);
-			exit(1);
+			free_tab(av);
+			(void)set;
+			exit(127);
 		}
 	}
 	if (execve(path, cmd, env) == -1)
 	{
+		free_tab(cmd);
+		free_tab(env);
+		free_tab(av);
 		escape(path);
 	}
 }

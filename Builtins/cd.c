@@ -12,14 +12,17 @@
 
 #include "../minishell.h"
 
-int	cd_command(char *path)
+int	cd_command(char **path)
 {
-	if (path == NULL)
+	int	i;
+
+	i = 1;
+	if (path[i] == NULL)
 	{
 		chdir("/home/oszwalbe");
 		return (0);
 	}
-	if (ft_strncmp(path, "..", 2) == 0)
+	if (ft_strncmp(path[i], "..", 2) == 0)
 	{
 		if (chdir("..") != 0)
 		{
@@ -29,14 +32,14 @@ int	cd_command(char *path)
 	}
 	else
 	{
-		if (chdir(path) != 0)
+		if (path[i + 1])
 		{
-			perror("chdir() error");
+			ft_putendl_fd(" too many arguments", 2);
 			return (1);
 		}
-		else
+		if (chdir(path[i]) != 0)
 		{
-			ft_putendl_fd(" too many arguments\n", 2);
+			perror("chdir() error");
 			return (1);
 		}
 	}

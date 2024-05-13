@@ -115,6 +115,7 @@ void	do_simple_command(t_set *set)
 	char	**files;
 	char	**cmd;
 	int		i;
+	int		status;
 
 	i = 0;
 	init_fd(set);
@@ -124,78 +125,102 @@ void	do_simple_command(t_set *set)
 	rd = check_redirections(set->cmd);
 	nb_files = count_nb_files(set->cmd);
 	file_in = find_file_in(set->cmd);
-	if (rd)
+	if (rd && (set->dq != 1 && set->sq != 1))
 	{
-		files = malloc(sizeof(char *) * (nb_files + 1));
-		if (!files)
-			return ;
-		while (i < nb_files)
+		id = fork();
+		if (id == 0)
 		{
-			file_out = find_file_out2(set, set->cmd);
-			if (file_out)
+			files = malloc(sizeof(char *) * (nb_files + 1));
+			if (!files)
+				return ;
+			// printf("nb files : %d\n", nb_files);
+			while (i < nb_files)
 			{
-				files[i] = ft_strdup(file_out);
+				file_out = find_file_out2(set, set->cmd);
+				// printf("%s\n", file_out);
+				if (file_out)
+				{
+					files[i] = ft_strdup(file_out);
+				}
+				i++;
 			}
-			i++;
-		}
-		files[i] = NULL;
-		if (rd == 1)
-		{
-			if (file_in)
+			files[i] = NULL;
+			if (rd == 1)
 			{
-				fd = open(file_in, O_RDONLY);
-				if (fd == -1)
-					error_mess();
-				dup2(fd, STDIN_FILENO);
+				if (file_in)
+				{
+					fd = open(file_in, O_RDONLY);
+					if (fd == -1)
+					{
+						free_tab(files);
+						free_tab(set->env);
+						free_tab(set->cmd);
+						close(set->saved_in);
+						close(set->saved_out);
+						error_mess();
+					}
+					dup2(fd, STDIN_FILENO);
+					close(fd);
+				}
+			}
+			else if (rd == 3)
+				here_doc(set, set->cmd[1]);
+			i = 0;
+			while (i < nb_files)
+			{
+				if (set->append == 1)
+				{
+					fd = open(files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+					if (fd == -1)
+						error_mess();
+				}
+				else
+				{
+					fd = open(files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+					if (fd == -1)
+					{
+						error_mess();
+					}
+				}
+				dup2(fd, STDOUT_FILENO);
 				close(fd);
+				i++;
 			}
-		}
-		else if (rd == 3)
-			here_doc(set->cmd[1]);
-		i = 0;
-		while (i < nb_files)
-		{
-			if (set->append == 1)
+			free_tab(files);
+			if (yes_or_no_builtins(set) == 1)
 			{
-				fd = open(files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
-				if (fd == -1)
-					error_mess();
+				do_builtins(set);
 			}
 			else
 			{
-				fd = open(files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				if (fd == -1)
+				id = fork();
+				cmd = copy_tabcmd(set->cmd);
+				if (id == 0)
 				{
-					error_mess();
+					close(set->saved_in);
+					close(set->saved_out);
+					execute_command(set, cmd, set->env);
 				}
+				free_tab(cmd);
 			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-			i++;
+			free_tab(set->cmd);
+			free_tab(set->env);
+			close(set->saved_in);
+			close(set->saved_out);
+			exit (1);
 		}
-		free_tab(files);
-		if (yes_or_no_builtins(set) == 1)
-		{
-			do_builtins(set);
-		}
-		else
-		{
-			id = fork();
-			cmd = copy_tabcmd(set->cmd);
-			if (id == 0)
-			{
-				close(set->saved_in);
-				close(set->saved_out);
-				execute_command(cmd, set->env);
-			}
-			free_tab(cmd);
-		}
+		reset_fd(set);
+		while (waitpid(id, &status, 0) != -1)
+			continue ;
+		if (WIFEXITED(status))
+			set->return_value = WEXITSTATUS(status);
 	}
 	else
 	{
 		if (yes_or_no_builtins(set) == 1)
 		{
 			do_builtins(set);
+			reset_fd(set);
 		}
 		else
 		{
@@ -204,11 +229,13 @@ void	do_simple_command(t_set *set)
 			{
 				close(set->saved_in);
 				close(set->saved_out);
-				execute_command(set->cmd, set->env);
+				execute_command(set, set->cmd, set->env);
 			}
+			reset_fd(set);
+			while (waitpid(id, &status, 0) != -1)
+				continue ;
+			if (WIFEXITED(status))
+				set->return_value = WEXITSTATUS(status);
 		}
 	}
-	reset_fd(set);
-	while (wait(NULL) != -1)
-		continue ;
 }

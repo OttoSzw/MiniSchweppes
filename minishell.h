@@ -13,6 +13,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <signal.h>
+# include <sys/signal.h>
 # include "libft/libft.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -68,7 +70,7 @@ typedef struct s_expand
 int			echo_command(char **s);
 int			env_command(char **env);
 int			pwd_command(char **s);
-int			cd_command(char *path);
+int			cd_command(char **path);
 int			exit_command(t_set *set, char *s, int size);
 int			unset_command(t_set *set, char **env);
 int			export_command(t_set *set);
@@ -83,7 +85,7 @@ void		print_tab(char **cmd);
 
 //	Utils functions for execution
 
-void		execute_command(char **av, char **env);
+void		execute_command(t_set *set, char **av, char **env);
 void		do_simple_command(t_set *set);
 void		print_tab(char **cmd);
 char		***copy_of_tab_of_tab(t_set *set, char **tab);
@@ -159,6 +161,6 @@ void		exec_child(int ac, char **av, t_pipex *pipex, char **env);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
 int			check_redirections(char **av);
-void		here_doc(char *limiter);
+void		here_doc(t_set *set, char *limiter);
 
 #endif

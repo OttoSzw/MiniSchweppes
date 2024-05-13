@@ -144,6 +144,7 @@ char	*copy_quotes(t_set *set)
 	{
 		if (set->input[i] == '\"')
 		{
+			set->dq = 1;
 			if (check_dollar(set->input))
 			{
 				set->expand = 1;
@@ -157,6 +158,7 @@ char	*copy_quotes(t_set *set)
 		}
 		else if (set->input[i] == '\'')
 		{
+			set->sq = 1;
 			if (set->input[i + 1] && set->input[i + 1] == '$')
 			{
 				counter += 2;

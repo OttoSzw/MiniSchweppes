@@ -70,5 +70,6 @@ int	exit_command(t_set *set, char *s, int size)
 	free_tab(set->cmd);
 	free(set->input);
 	free_tab(set->env);
+	reset_fd(set);
 	exit(nb);
 }

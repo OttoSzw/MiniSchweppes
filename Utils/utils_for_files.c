@@ -19,23 +19,28 @@ int	check_append(char **cmd)
 int	check_redirections(char **av)
 {
 	int	i;
+	int	j;
 
 	i = 0;
 	while (av[i])
 	{
-		if (ft_strcmp("<", av[i]) == 0)
-			return (1);
-		else if (ft_strcmp(">", av[i]) == 0)
-			return (2);
-		else if (ft_strcmp("<<", av[i]) == 0)
-			return (3);
-		else if (ft_strcmp(">>", av[i]) == 0)
-			return (4);
+		j = 0;
+		while (av[i][j])
+		{
+			if (av[i][j] == '<')
+				return (1);
+			else if (av[i][j] == '>')
+				return (2);
+			else if (av[i][j] == '<' && av[i][j + 1] == '<')
+				return (3);
+			else if (av[i][j] == '>' && av[i][j + 1] == '>')
+				return (4);
+			j++;
+		}
 		i++;
 	}
 	return (0);
 }
-
 
 char	*find_file_out(char **cmd)
 {
@@ -73,14 +78,25 @@ char	*find_file_in(char **cmd)
 int	count_nb_files(char **av)
 {
 	int	i;
+	int	j;
 	int	counter;
 
 	counter = 0;
 	i = 0;
 	while (av[i])
 	{
-		if (ft_strcmp(">", av[i]) == 0 || ft_strcmp(">>", av[i]) == 0)
+		j = 0;
+		if (av[i][j] == '>' && !av[i][j + 1])
 			counter++;
+		while (av[i][j])
+		{
+			if (av[i][j] == '>' && av[i][j + 1] && (av[i][j + 1] != '>' && av[i][j - 1] != '>'))
+				counter++;
+			else if (av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] == '>')
+				counter++;
+			if (av[i][j])
+				j++;
+		}
 		i++;
 	}
 	return (counter);
@@ -89,18 +105,38 @@ int	count_nb_files(char **av)
 char	*find_file_out2(t_set *set, char **cmd)
 {
 	int	i;
+	int j;
 
 	i = set->index;
 	while (cmd[i])
 	{
-		if (cmd[i + 1] && ((ft_strcmp(">", cmd[i]) == 0) || (ft_strcmp(">",
-						cmd[i]) == 0)))
+		j = 0;
+		while (cmd[i][j])
 		{
-			set->index = i + 1;
-			return (cmd[i + 1]);
+			if (cmd[i][j] == '>' && cmd[i][j + 1] && cmd[i][j + 1] != '>')
+			{
+				set->index = i + 1;
+				return (&cmd[i][j + 1]);
+			}
+			else if (cmd[i][j] == '>' && !cmd[i][j + 1])
+			{
+				set->index = i + 1;
+				return (cmd[i + 1]);
+			}
+			else if (cmd[i][j] == '>' && cmd[i][j + 2] && cmd[i][j + 1] == '>')
+			{
+				set->index = i + 1;
+				return (&cmd[i][j + 1]);
+			}
+			else if (cmd[i][j] == '>' && !cmd[i][j + 2] && cmd[i][j + 1] == '>')
+			{
+				set->index = i + 1;
+				return (cmd[i + 1]);
+			}
+			j++;
 		}
-		i++;
+		if (cmd[i])
+			i++;
 	}
-	set->index = i;
 	return (NULL);
 }
