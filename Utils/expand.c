@@ -122,9 +122,9 @@ int	expand(t_set *set)
 	while (set->cmd[i])
 	{
 		j = 0;
-		while (set->cmd[i] && set->cmd[i][j])
+		while (set->cmd[i][j])
 		{
-			if (set->cmd[i][j] == '\'')
+			if (set->cmd[i][j] == '\'' && set->dq != 1)
 			{
 				if (expand_quote(set, i) == 0)
 					return (0);
@@ -140,9 +140,11 @@ int	expand(t_set *set)
 				else if (expand_arg(set, i) == 0)
 					return (0);
 			}
-			j++;
+			if (set->cmd[i][j])
+				j++;
 		}
-		i++;
+		if (set->cmd[i])
+			i++;
 	}
 	return (1);
 }

@@ -30,17 +30,17 @@ int	check_errors(char *s, long nb)
 {
 	if (ft_strlen(s) == 19 && ft_strcmp(s, "9223372036854775807") != 0)
 	{
-		ft_putendl_fd("numeric argument required\n", 2);
+		ft_putendl_fd("numeric argument required", 2);
 		return (2);
 	}
 	if (ft_strlen(s) >= 20 && ft_strcmp(s, "-9223372036854775808") != 0)
 	{
-		ft_putendl_fd("numeric argument required\n", 2);
+		ft_putendl_fd("numeric argument required", 2);
 		return (2);
 	}
 	if (is_num(s) == 1)
 	{
-		ft_putendl_fd(" numeric argument required\n", 2);
+		ft_putendl_fd(" numeric argument required", 2);
 		return (2);
 	}
 	if (nb < 0 && nb > -255)
@@ -51,25 +51,29 @@ int	check_errors(char *s, long nb)
 int	exit_command(t_set *set, char *s, int size)
 {
 	long	nb;
+	int		error;
 
+	error = 0;
 	if (!s)
 	{
 		free_tab(set->cmd);
 		free(set->input);
 		free_tab(set->env);
+		reset_fd(set);
+		printf("exit\n");
 		exit(0);
 	}
 	if (size > 2)
 	{
-		ft_putendl_fd(" too many arguments\n", 2);
+		ft_putendl_fd(" too many arguments", 2);
 		return (1);
 	}
-	nb = ft_atol(s);
 	printf("exit\n");
-	nb = check_errors(s, nb);
+	nb = ft_atol(s);
+	error = check_errors(s, nb);
 	free_tab(set->cmd);
 	free(set->input);
 	free_tab(set->env);
 	reset_fd(set);
-	exit(nb);
+	exit(error);
 }

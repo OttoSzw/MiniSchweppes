@@ -132,7 +132,7 @@ void	do_builtins(t_set *set)
 			free_tab(to_write);
 		}
 		else if (ft_strcmp("cd", set->cmd[i]) == 0)
-			set->return_value = cd_command(set->cmd);
+			set->return_value = cd_command(set, set->cmd);
 		else if (ft_strcmp("pwd", set->cmd[i]) == 0)
 			set->return_value = pwd_command(set->cmd);
 		else if (ft_strcmp("env", set->cmd[i]) == 0)

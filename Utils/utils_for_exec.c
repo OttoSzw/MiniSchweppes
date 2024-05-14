@@ -171,8 +171,7 @@ void	execute_command(t_set* set, char **av, char **env)
 		{
 			free_tab(cmd);
 			free_tab(env);
-			printf("bash : %s: command not found\n", av[0]);
-			free_tab(av);
+			ft_putendl_fd("bash : command not found", 2);
 			(void)set;
 			exit(127);
 		}

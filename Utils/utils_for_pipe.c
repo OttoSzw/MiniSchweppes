@@ -20,14 +20,19 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 	int	pipe_fd[2];
 	int	id;
 	int		status;
+	int	fd_previous;
 
 
 	init_fd(set);
 	i = 0;
+	fd_previous = 0;
 	while (i < size)
 	{
-		if (pipe(pipe_fd) == -1)
+		if (i != (size - 1))
+		{
+			if (pipe(pipe_fd) == -1)
 			error_mess();
+		}
 		id = fork();
 		if (id == -1)
 			error_mess();
@@ -44,59 +49,80 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 			}
 			else if (i == (size - 1))
 			{
-				close(pipe_fd[1]);
-				close(pipe_fd[0]);
+				dup2(fd_previous, STDIN_FILENO);
 				close(set->saved_in);
 				close(set->saved_out);
+				close(fd_previous);
 				command(c[i], set);
 			}
 			else
 			{
+				dup2(fd_previous, STDIN_FILENO);
 				dup2(pipe_fd[1], STDOUT_FILENO);
 				close(pipe_fd[1]);
 				close(pipe_fd[0]);
 				close(set->saved_in);
 				close(set->saved_out);
+				close(fd_previous);
 				command(c[i], set);
 			}
 		}
 		else
 		{
-			dup2(pipe_fd[0], STDIN_FILENO);
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
+			// dup2(pipe_fd[0], STDIN_FILENO);
+			if (i != 0)
+			{
+				if (i == (size - 1))
+					close(fd_previous);
+				else
+				{
+					close(fd_previous);
+					fd_previous = pipe_fd[0];
+					close(pipe_fd[1]);
+				}
+			}
+			else
+			{
+				fd_previous = pipe_fd[0];
+				close(pipe_fd[1]);
+			}
 		}
 		i++;
 	}
 	reset_fd(set);
-	while (waitpid(id, &status, 0) != -1)
+	if (i == size)
+	{
+		waitpid(id, &status, 0);
+		if (WIFEXITED(status))
+			set->return_value = WEXITSTATUS(status);
+	} 
+	while (wait(NULL) != -1)
 		continue ;
-	if (WIFEXITED(status))
-		set->return_value = WEXITSTATUS(status);
 }
 
 void	parse_for_pipe(t_set* set)
 {
 	char ***c;
 	int	nb_arg;
-	// int	i;
+	int	i;
 	int j;
 
-	// i = 0;
+	i = 0;
 	j = 0;
 	c = copy_of_tab_of_tab(set, set->cmd);
 	nb_arg = count_cmdpipe(set->cmd);
-	// while (c[i])
-	// {
-	// 	printf("\nCase %d :\n", i);
-	// 	j = 0;
-	// 	while (c[i][j])
-	// 	{
-	// 		printf("-> : %s\n", c[i][j]);
-	// 		j++;
-	// 	}
-	// 	i++;
-	// }
+	while (c[i])
+	{
+		printf("\nCase %d :\n", i);
+		j = 0;
+		while (c[i][j])
+		{
+			printf("-> : %s\n", c[i][j]);
+			j++;
+		}
+		i++;
+	}
+	j = 0;
 	exec_multiple_pipe(c, set, nb_arg);
 	while (c[j])
 	{

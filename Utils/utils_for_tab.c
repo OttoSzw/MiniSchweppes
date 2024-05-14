@@ -17,16 +17,12 @@ void	free_tab(char **s)
 	int	i;
 
 	i = 0;
-	if (s)
+	while (s[i])
 	{
-		while (s[i])
-		{
-			free(s[i]);
-			i++;
-		}
-		free(s);
-		s = NULL;
+		free(s[i]);
+		i++;
 	}
+	free(s);
 }
 
 int	tab_calculate(char **s)

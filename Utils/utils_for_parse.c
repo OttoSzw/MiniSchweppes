@@ -15,7 +15,8 @@ char	*copy_normal(t_set *set)
 	{
 		if (set->input[i] && (set->input[i] == '\'' || set->input[i] == '\"'))
 		{
-			if (set->input[i] == '\'' && (set->input[i + 1] && set->input[i + 1] == '$'))
+			if (set->input[i] == '\'' && (set->input[i + 1] && set->input[i
+				+ 1] == '$'))
 			{
 				set->expand = 1;
 				counter += 2;
@@ -122,43 +123,67 @@ int	check_dollar(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1] != '\"') 
+		if (str[i] == '$' && str[i + 1] != '\"')
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-char	*copy_quotes(t_set *set)
+void	check_sq_dq(t_set *set)
 {
-	int		i;
-	int		j;
-	int		block;
-	int		counter;
-	char	*tempo; 
+	int	i;
+	
+	i = 0;
+	while (set->input[i])
+	{
+		if (set->input[i] == '\"')
+		{
+			i++;
+			while (set->input[i] != '\"')
+			{
+				if (set->input[i] == '>' || set->input[i] == '<')
+					set->dq = 1;
+				i++;
+			}
+		}
+		else if (set->input[i] == '\'')
+		{
+			i++;
+			while (set->input[i] != '\'')
+			{
+				if (set->input[i] == '>' || set->input[i] == '<')
+					set->sq = 1;
+				i++;
+			}
+		}
+		i++;
+	}
+}
 
-	i = set->i;
-	j = 0;
+int	find_size_quotes(t_set *set, int i)
+{
+	int	counter;
+
 	counter = 0;
 	while (set->input[i])
 	{
 		if (set->input[i] == '\"')
 		{
-			set->dq = 1;
+			check_sq_dq(set);
 			if (check_dollar(set->input))
-			{
 				set->expand = 1;
-			}
 			i++;
 			while (set->input[i] != '\"')
 			{
 				i++;
 				counter++;
 			}
+			return (counter);
 		}
 		else if (set->input[i] == '\'')
 		{
-			set->sq = 1;
+			check_sq_dq(set);
 			if (set->input[i + 1] && set->input[i + 1] == '$')
 			{
 				counter += 2;
@@ -173,11 +198,25 @@ char	*copy_quotes(t_set *set)
 						+ 1] != ' '))
 					i++;
 			}
+			return (counter);
 		}
 		if (set->input[i])
 			i++;
 	}
-	// printf("la taille est de %d\n", counter);
+	return (counter);
+}
+
+char	*copy_quotes(t_set *set)
+{
+	int		i;
+	int		j;
+	int		block;
+	int		counter;
+	char	*tempo;
+
+	i = set->i;
+	j = 0;
+	counter = find_size_quotes(set, i);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	i = set->i;
 	block = i;

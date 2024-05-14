@@ -193,14 +193,10 @@ void	do_simple_command(t_set *set)
 			}
 			else
 			{
-				id = fork();
 				cmd = copy_tabcmd(set->cmd);
-				if (id == 0)
-				{
-					close(set->saved_in);
-					close(set->saved_out);
-					execute_command(set, cmd, set->env);
-				}
+				close(set->saved_in);
+				close(set->saved_out);
+				execute_command(set, cmd, set->env);
 				free_tab(cmd);
 			}
 			free_tab(set->cmd);
@@ -210,8 +206,7 @@ void	do_simple_command(t_set *set)
 			exit (1);
 		}
 		reset_fd(set);
-		while (waitpid(id, &status, 0) != -1)
-			continue ;
+		waitpid(id, &status, 0);
 		if (WIFEXITED(status))
 			set->return_value = WEXITSTATUS(status);
 	}
@@ -232,8 +227,7 @@ void	do_simple_command(t_set *set)
 				execute_command(set, set->cmd, set->env);
 			}
 			reset_fd(set);
-			while (waitpid(id, &status, 0) != -1)
-				continue ;
+			waitpid(id, &status, 0);
 			if (WIFEXITED(status))
 				set->return_value = WEXITSTATUS(status);
 		}
