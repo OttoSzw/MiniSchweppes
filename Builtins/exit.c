@@ -59,7 +59,8 @@ int	exit_command(t_set *set, char *s, int size)
 		free_tab(set->cmd);
 		free(set->input);
 		free_tab(set->env);
-		reset_fd(set);
+		if (set->flag_pipe == 0)
+			reset_fd(set);
 		printf("exit\n");
 		exit(0);
 	}

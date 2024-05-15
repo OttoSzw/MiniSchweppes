@@ -12,33 +12,34 @@
 
 #include "minishell.h"
 
-int	yes_or_no_builtins(t_set *set)
+int	yes_or_no_builtins(t_set *set, char **c)
 {
 	int	i;
 
 	i = 0;
-	while (set->cmd[i])
+	(void)set;
+	while (c[i])
 	{
-		if (ft_strcmp("echo", set->cmd[i]) == 0)
+		if (ft_strcmp("echo", c[i]) == 0)
 			return (1);
-		else if (ft_strcmp("cd", set->cmd[i]) == 0)
+		else if (ft_strcmp("cd", c[i]) == 0)
 			return (1);
-		else if (ft_strcmp("pwd", set->cmd[i]) == 0)
+		else if (ft_strcmp("pwd", c[i]) == 0)
 			return (1);
-		else if (ft_strcmp("env", set->cmd[i]) == 0)
+		else if (ft_strcmp("env", c[i]) == 0)
 			return (1);
-		else if (ft_strcmp("exit", set->cmd[i]) == 0)
+		else if (ft_strcmp("exit", c[i]) == 0)
 			return (1);
-		else if (ft_strcmp("unset", set->cmd[i]) == 0)
+		else if (ft_strcmp("unset", c[i]) == 0)
 			return (1);
-		else if (ft_strcmp("export", set->cmd[i]) == 0)
+		else if (ft_strcmp("export", c[i]) == 0)
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-char **find_write(t_set *set)
+char **find_write(t_set *set, char **cmd)
 {
 	int	i;
 	int	j;
@@ -48,11 +49,11 @@ char **find_write(t_set *set)
 	counter = 0;
 	i = 0;
 	j = 0;
-	if (set->cmd[i])
+	if (cmd[i])
 	{
-		if (ft_strcmp(set->cmd[i], "echo") != 0)
+		if (ft_strcmp(cmd[i], "echo") != 0)
 		{
-			while (set->cmd[i] && ft_strcmp(set->cmd[i], "echo") != 0)
+			while (cmd[i] && ft_strcmp(cmd[i], "echo") != 0)
 			{
 				i++;
 			}	
@@ -60,7 +61,7 @@ char **find_write(t_set *set)
 		i++;
 		if (set->dq != 1)
 		{
-			while (set->cmd[i] && ft_strcmp(set->cmd[i], ">") != 0)
+			while (cmd[i] && ft_strcmp(cmd[i], ">") != 0)
 			{
 				counter++;
 				i++;
@@ -69,7 +70,7 @@ char **find_write(t_set *set)
 		}
 		else
 		{
-			while (set->cmd[i])
+			while (cmd[i])
 			{
 				counter++;
 				i++;
@@ -79,11 +80,11 @@ char **find_write(t_set *set)
 	}
 	to_copy = malloc(sizeof(char *) * (counter + 1));
 	i = 0;
-	if (set->cmd[i])
+	if (cmd[i])
 	{
-		if (ft_strcmp(set->cmd[i], "echo") != 0)
+		if (ft_strcmp(cmd[i], "echo") != 0)
 		{
-			while (set->cmd[i] && ft_strcmp(set->cmd[i], "echo") != 0)
+			while (cmd[i] && ft_strcmp(cmd[i], "echo") != 0)
 			{
 				i++;
 			}	
@@ -91,9 +92,9 @@ char **find_write(t_set *set)
 		i++;
 		if (set->dq != 1)
 		{
-			while (set->cmd[i] && (ft_strcmp(set->cmd[i], ">") != 0 && ft_strcmp(set->cmd[i], ">>") != 0))
+			while (cmd[i] && (ft_strcmp(cmd[i], ">") != 0 && ft_strcmp(cmd[i], ">>") != 0))
 			{
-				to_copy[j] = ft_strdup(set->cmd[i]);
+				to_copy[j] = ft_strdup(cmd[i]);
 				// printf("%s\n", to_copy[j]);
 				j++;
 				i++;
@@ -102,9 +103,9 @@ char **find_write(t_set *set)
 		}
 		else
 		{
-			while (set->cmd[i])
+			while (cmd[i])
 			{
-				to_copy[j] = ft_strdup(set->cmd[i]);
+				to_copy[j] = ft_strdup(cmd[i]);
 				// printf("%s\n", to_copy[j]);
 				j++;
 				i++;
@@ -116,33 +117,33 @@ char **find_write(t_set *set)
 	return (to_copy);
 }
 
-void	do_builtins(t_set *set)
+void	do_builtins(t_set *set, char **c)
 {
 	char **to_write;
 
 	int	i;
 
 	i = 0;
-	while (set->cmd[i])
+	while (c[i])
 	{
-		if (ft_strcmp("echo", set->cmd[i]) == 0)
+		if (ft_strcmp("echo", c[i]) == 0)
 		{
-			to_write = find_write(set);
+			to_write = find_write(set, c);
 			set->return_value = echo_command(to_write);
 			free_tab(to_write);
 		}
-		else if (ft_strcmp("cd", set->cmd[i]) == 0)
-			set->return_value = cd_command(set, set->cmd);
-		else if (ft_strcmp("pwd", set->cmd[i]) == 0)
-			set->return_value = pwd_command(set->cmd);
-		else if (ft_strcmp("env", set->cmd[i]) == 0)
+		else if (ft_strcmp("cd", c[i]) == 0)
+			set->return_value = cd_command(set, c);
+		else if (ft_strcmp("pwd", c[i]) == 0)
+			set->return_value = pwd_command(c);
+		else if (ft_strcmp("env", c[i]) == 0)
 			set->return_value = env_command(set->env);
-		else if (ft_strcmp("exit", set->cmd[i]) == 0)
-			set->return_value = exit_command(set, set->cmd[1], set->size_tab);
-		else if (ft_strcmp("unset", set->cmd[i]) == 0)
+		else if (ft_strcmp("exit", c[i]) == 0)
+			set->return_value = exit_command(set, c[1], tab_calculate(c));
+		else if (ft_strcmp("unset", c[i]) == 0)
 			set->return_value = unset_command(set, set->env);
-		else if (ft_strcmp("export", set->cmd[i]) == 0)
-			set->return_value = export_command(set);
+		else if (ft_strcmp("export", c[i]) == 0)
+			set->return_value = export_command(set, c, tab_calculate(c));
 		i++;
 	}
 }
@@ -153,7 +154,10 @@ void	executable(t_set *set)
 
 	j = 0;
 	if (check_pipe(set))
+	{
+		set->flag_pipe = 1;
 		parse_for_pipe(set);
+	}
 	else
 		do_simple_command(set);
 }
@@ -213,7 +217,16 @@ void	command(char **c, t_set *set)
 	}
 	else
 	{
-		execute_command(set, c, set->env);
+		if (yes_or_no_builtins(set, c) == 1)
+		{
+			do_builtins(set, c);
+			free_struct(set);
+			exit(set->return_value);
+		}
+		else
+		{
+			execute_command(set, c, set->env);
+		}
 	}
 }
 
@@ -321,6 +334,7 @@ int	main(int ac, char **av, char **env)
 	set.env = copy_of_tab(env);
 	set.return_value = 0;
 	set.expand = 0;
+	set.flag_pipe = 0;
 	while (1)
 	{
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"

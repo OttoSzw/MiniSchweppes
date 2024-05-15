@@ -187,9 +187,9 @@ void	do_simple_command(t_set *set)
 				i++;
 			}
 			free_tab(files);
-			if (yes_or_no_builtins(set) == 1)
+			if (yes_or_no_builtins(set, set->cmd) == 1)
 			{
-				do_builtins(set);
+				do_builtins(set, set->cmd);
 			}
 			else
 			{
@@ -212,9 +212,9 @@ void	do_simple_command(t_set *set)
 	}
 	else
 	{
-		if (yes_or_no_builtins(set) == 1)
+		if (yes_or_no_builtins(set, set->cmd) == 1)
 		{
-			do_builtins(set);
+			do_builtins(set, set->cmd);
 			reset_fd(set);
 		}
 		else

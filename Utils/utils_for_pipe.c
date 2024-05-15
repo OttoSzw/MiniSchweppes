@@ -111,17 +111,17 @@ void	parse_for_pipe(t_set* set)
 	j = 0;
 	c = copy_of_tab_of_tab(set, set->cmd);
 	nb_arg = count_cmdpipe(set->cmd);
-	while (c[i])
-	{
-		printf("\nCase %d :\n", i);
-		j = 0;
-		while (c[i][j])
-		{
-			printf("-> : %s\n", c[i][j]);
-			j++;
-		}
-		i++;
-	}
+	// while (c[i])
+	// {
+	// 	printf("\nCase %d :\n", i);
+	// 	j = 0;
+	// 	while (c[i][j])
+	// 	{
+	// 		printf("-> : %s\n", c[i][j]);
+	// 		j++;
+	// 	}
+	// 	i++;
+	// }
 	j = 0;
 	exec_multiple_pipe(c, set, nb_arg);
 	while (c[j])

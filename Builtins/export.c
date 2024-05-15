@@ -103,7 +103,7 @@ int	success_find(char **env, char *tab2)
 	return (free(str), 0);
 }
 
-int	export_command(t_set *set)
+int	export_command(t_set *set, char **c, int size2c)
 {
 	char **export_env;
 	int i;
@@ -113,7 +113,7 @@ int	export_command(t_set *set)
 	i = 0;
 	j = 0;
 	size = tab_calculate(set->env);
-	if (set->cmd[0] && !set->cmd[1])
+	if (c[0] && !c[1])
 	{
 		export_env = copy_of_tab(set->env);
 		sort_list_ascii(export_env);
@@ -122,14 +122,14 @@ int	export_command(t_set *set)
 		return (0);
 	}
 	i++;
-	while (i < set->size_tab)
+	while (i < size2c)
 	{
-		if (check_arg(set->cmd[i]))
+		if (check_arg(c[i]))
 		{
-			if (!(success_find(set->env, set->cmd[i])))
+			if (!(success_find(set->env, c[i])))
 			{
 				set->env = ft_realloc(set->env, size);
-				set->env[size] = ft_strdup(set->cmd[i]);
+				set->env[size] = ft_strdup(c[i]);
 				size++;
 			}
 		}

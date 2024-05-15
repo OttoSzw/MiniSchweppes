@@ -45,7 +45,6 @@ typedef struct s_set
 	char	**env;
 	int		size_tab;
 	int		i;
-	char	*for_fd;
 	char	**for_write;
 	int		saved_in;
 	int		saved_out;
@@ -55,6 +54,7 @@ typedef struct s_set
 	int		sq;
 	int		return_value;
 	int		expand;
+	int		flag_pipe;
 }			t_set;
 
 typedef struct s_expand
@@ -73,7 +73,7 @@ int			pwd_command(char **s);
 int			cd_command(t_set *set, char **path);
 int			exit_command(t_set *set, char *s, int size);
 int			unset_command(t_set *set, char **env);
-int			export_command(t_set *set);
+int			export_command(t_set *set, char **c, int size);
 
 //	Utils functions for tab
 
@@ -99,8 +99,8 @@ int			check_redirections(char **av);
 int			check_append(char **cmd);
 int			count_cmdpipe(char **av);
 char		**copy_tabcmd(char **cmd);
-void		do_builtins(t_set *set);
-int			yes_or_no_builtins(t_set *set);
+void		do_builtins(t_set *set, char **c);
+int			yes_or_no_builtins(t_set *set, char **c);
 void		command(char **c, t_set *set);
 
 //	Utils functions for parsing
@@ -162,5 +162,9 @@ int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
 int			check_redirections(char **av);
 void		here_doc(t_set *set, char *limiter);
+
+// Utils for free
+
+void	free_struct(t_set *set);
 
 #endif
