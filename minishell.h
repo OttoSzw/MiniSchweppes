@@ -43,9 +43,9 @@ typedef struct s_set
 	char	*input;
 	char	**cmd;
 	char	**env;
+	char	**files;
 	int		size_tab;
 	int		i;
-	char	**for_write;
 	int		saved_in;
 	int		saved_out;
 	int		append;
@@ -70,7 +70,7 @@ typedef struct s_expand
 int			echo_command(char **s);
 int			env_command(char **env);
 int			pwd_command(char **s);
-int			cd_command(t_set *set, char **path);
+int			cd_command(char **path);
 int			exit_command(t_set *set, char *s, int size);
 int			unset_command(t_set *set, char **env);
 int			export_command(t_set *set, char **c, int size);
@@ -160,10 +160,11 @@ void		exec_child(int ac, char **av, t_pipex *pipex, char **env);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
 int			check_redirections(char **av);
-void		here_doc(t_set *set, char *limiter);
+void		here_doc(t_set *set, char *limiter, char *av2);
 
-// Utils for free
+// Utils for free and init
 
+void	init_struct(t_set *set, char **env);
 void	free_struct(t_set *set);
 
 #endif

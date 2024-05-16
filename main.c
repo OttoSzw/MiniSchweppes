@@ -133,7 +133,7 @@ void	do_builtins(t_set *set, char **c)
 			free_tab(to_write);
 		}
 		else if (ft_strcmp("cd", c[i]) == 0)
-			set->return_value = cd_command(set, c);
+			set->return_value = cd_command(c);
 		else if (ft_strcmp("pwd", c[i]) == 0)
 			set->return_value = pwd_command(c);
 		else if (ft_strcmp("env", c[i]) == 0)
@@ -191,7 +191,7 @@ void	command(char **c, t_set *set)
 			}
 		}
 		else if (rd == 3)
-			here_doc(set, c[1]);
+			here_doc(set, c[1], c[2]);
 		if (file_out)
 		{
 			if (set->append == 1)
@@ -247,7 +247,7 @@ int	check_grammary(t_set *set, char *str)
 			i++;
 		if (str[i] == '|')
 		{
-			printf("bash: syntax error near unexpected token '|'\n");
+			printf("bash: syntax error near unexpected token `|'\n");
 			return (set->return_value = 2, 2);
 		}
 	}
@@ -257,7 +257,7 @@ int	check_grammary(t_set *set, char *str)
 		{
 			if (!str[i + 1])
 			{
-				printf("bash: syntax error near unexpected token 'newline'\n");
+				printf("bash: syntax error near unexpected token `newline'\n");
 				return (set->return_value = 2, 2);
 			}
 			else if (str[i + 1] == '>' || str[i + 1] == '<' || str[i
@@ -266,14 +266,14 @@ int	check_grammary(t_set *set, char *str)
 				i++;
 				if (str[i + 1] == '\0')
 				{
-					printf("bash: syntax error near unexpected token 'newline'\n");
+					printf("bash: syntax error near unexpected token `newline'\n");
 					return (set->return_value = 2, 2);
 				}
 				else
 				{
 					if (!str[i + 1])
 					{
-						printf("bash: syntax error near unexpected token '%c'\n",
+						printf("bash: syntax error near unexpected token `%c'\n",
 							str[i + 1]);
 						return (set->return_value = 2, 2);
 					}
@@ -281,7 +281,7 @@ int	check_grammary(t_set *set, char *str)
 						i++;
 					if (str[i + 1] == '>' || str[i + 1] == '<')
 					{
-						printf("bash: syntax error near unexpected token '%c'\n",
+						printf("bash: syntax error near unexpected token `%c'\n",
 							str[i + 1]);
 						return (set->return_value = 2, 2);
 					}
@@ -293,7 +293,7 @@ int	check_grammary(t_set *set, char *str)
 					i++;
 				if (str[i + 1] == '>' || str[i + 1] == '<')
 				{
-					printf("bash: syntax error near unexpected token '%c'\n",
+					printf("bash: syntax error near unexpected token `%c'\n",
 						str[i + 1]);
 					return (set->return_value = 2, 2);
 				}
@@ -308,18 +308,18 @@ int	check_grammary(t_set *set, char *str)
 					i++;
 				if (!str[i])
 				{
-					printf("bash: syntax error near unexpected token '|'\n");
+					printf("bash: syntax error near unexpected token `|'\n");
 					return (set->return_value = 2, 2);
 				}
 				else if (str[i] == '|')
 				{
-					printf("bash: syntax error near unexpected token '|'\n");
+					printf("bash: syntax error near unexpected token `|'\n");
 					return (set->return_value = 2, 2);
 				}
 			}
 			else
 			{
-				printf("bash: syntax error near unexpected token '|'\n");
+				printf("bash: syntax error near unexpected token `|'\n");
 				return (set->return_value = 2, 2);
 			}
 		}
@@ -339,12 +339,9 @@ int	main(int ac, char **av, char **env)
 	if (ac < 1)
 		return (1);
 	i = 0;
-	set.env = copy_of_tab(env);
-	set.return_value = 0;
-	set.flag_pipe = 0;
+	init_struct(&set, env);
 	while (1)
 	{
-	
 		set.expand = 0;
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
 								"n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2"

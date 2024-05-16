@@ -112,7 +112,6 @@ void	do_simple_command(t_set *set)
 	int		nb_files;
 	char	*file_in;
 	char	*file_out;
-	char	**files;
 	char	**cmd;
 	int		i;
 	int		status;
@@ -126,13 +125,14 @@ void	do_simple_command(t_set *set)
 	nb_files = count_nb_files(set->cmd);
 	file_in = find_file_in(set->cmd);
 	// printf("%s\n", file_in);
+	// printf("%d\n", rd);
 	if (rd && (set->dq != 1 && set->sq != 1))
 	{
 		id = fork();
 		if (id == 0)
 		{
-			files = malloc(sizeof(char *) * (nb_files + 1));
-			if (!files)
+			set->files = malloc(sizeof(char *) * (nb_files + 1));
+			if (!set->files)
 				return ;
 			// printf("nb files : %d\n", nb_files);
 			while (i < nb_files)
@@ -141,11 +141,11 @@ void	do_simple_command(t_set *set)
 				// printf("%s\n", file_out);
 				if (file_out)
 				{
-					files[i] = ft_strdup(file_out);
+					set->files[i] = ft_strdup(file_out);
 				}
 				i++;
 			}
-			files[i] = NULL;
+			set->files[i] = NULL;
 			if (rd == 1)
 			{
 				if (file_in)
@@ -153,7 +153,7 @@ void	do_simple_command(t_set *set)
 					fd = open(file_in, O_RDONLY);
 					if (fd == -1)
 					{
-						free_tab(files);
+						free_tab(set->files);
 						free_tab(set->env);
 						free_tab(set->cmd);
 						close(set->saved_in);
@@ -165,19 +165,27 @@ void	do_simple_command(t_set *set)
 				}
 			}
 			else if (rd == 3)
-				here_doc(set, set->cmd[1]);
+			{
+				here_doc(set, set->cmd[1], set->cmd[2]);
+				if (!set->cmd[2])
+				{
+					reset_fd(set);
+					free_struct(set);
+					exit(0);
+				}
+			}
 			i = 0;
 			while (i < nb_files)
 			{
 				if (set->append == 1)
 				{
-					fd = open(files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+					fd = open(set->files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
 					if (fd == -1)
 						error_mess();
 				}
 				else
 				{
-					fd = open(files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+					fd = open(set->files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 					if (fd == -1)
 					{
 						error_mess();
@@ -187,7 +195,7 @@ void	do_simple_command(t_set *set)
 				close(fd);
 				i++;
 			}
-			free_tab(files);
+			free_tab(set->files);
 			if (yes_or_no_builtins(set, set->cmd) == 1)
 			{
 				do_builtins(set, set->cmd);
@@ -195,7 +203,6 @@ void	do_simple_command(t_set *set)
 			else
 			{
 				cmd = copy_tabcmd(set->cmd);
-				// printf("%s\n", cmd[2]);
 				close(set->saved_in);
 				close(set->saved_out);
 				execute_command(set, cmd, set->env);

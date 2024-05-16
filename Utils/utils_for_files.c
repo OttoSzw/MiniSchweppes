@@ -27,7 +27,7 @@ int	check_redirections(char **av)
 		j = 0;
 		while (av[i][j])
 		{
-			if (av[i][j] == '<')
+			if (av[i][j] == '<' && !av[i][j + 1])
 				return (1);
 			else if (av[i][j] == '>')
 				return (2);

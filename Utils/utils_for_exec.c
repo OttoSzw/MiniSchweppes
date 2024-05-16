@@ -12,59 +12,62 @@
 
 #include "../minishell.h"
 
-int	get_next_line2(char **line)
-{
-	char	*buffer;
-	int		i;
-	int		r;
-	char	c;
+// int	get_next_line2(char **line)
+// {
+// 	char	*buffer;
+// 	int		i;
+// 	int		r;
+// 	char	c;
 
-	i = 0;
-	r = 0;
-	buffer = (char *)calloc(10000, 1);
-	if (!buffer)
-		return (-1);
-	r = read(0, &c, 1);
-	while (r && c != '\n' && c != '\0')
-	{
-		if (c != '\n' && c != '\0')
-			buffer[i] = c;
-		i++;
-		r = read(0, &c, 1);
-	}
-	buffer[++i] = '\0';
-	*line = buffer;
-	return (r);
-}
+// 	i = 0;
+// 	r = 0;
+// 	buffer = (char *)calloc(10000, 1);
+// 	if (!buffer)
+// 		return (-1);
+// 	r = read(0, &c, 1);
+// 	while (r && c != '\n' && c != '\0')
+// 	{
+// 		if (c != '\n' && c != '\0')
+// 			buffer[i] = c;
+// 		i++;
+// 		r = read(0, &c, 1);
+// 	}
+// 	buffer[++i] = '\0';
+// 	*line = buffer;
+// 	return (r);
+// }
 
-void	here_doc(t_set *set, char *limiter)
+void	here_doc(t_set *set, char *limiter, char *av2)
 {
 	pid_t	reader;
 	int		fd[2];
 	char	*line;
 
-	// if (ac < 6)
-	// 	invalid_arguments2();
+	line = NULL;
 	if (pipe(fd) == -1)
 		error_mess();
 	reader = fork();
 	if (reader == 0)
 	{
 		close(fd[0]);
-		while (get_next_line2(&line))
+		line = readline(">"); 
+		while (line != NULL)
 		{
 			if (ft_strcmp(line, limiter) == 0)
 			{
 				free(line);
 				close(fd[1]);
-				free_tab(set->cmd);
-				free_tab(set->env);
 				reset_fd(set);
+				free_struct(set);
 				exit(EXIT_SUCCESS);
 			}
-			ft_putendl_fd(line, fd[1]);
+			if (av2)
+				ft_putendl_fd(line, fd[1]);
 			free(line);
+			line = readline(">"); 
 		}
+		reset_fd(set);
+		free_struct(set);
 		close(fd[1]);
 		exit(1);
 	}
@@ -170,9 +173,10 @@ void	execute_command(t_set* set, char **av, char **env)
 		if (!path)
 		{
 			free_tab(cmd);
-			free_tab(env);
-			ft_putendl_fd("bash : command not found", 2);
-			(void)set;
+			ft_putstr_fd("bash : ", 2);
+			ft_putstr_fd(av[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
+			free_struct(set);
 			exit(127);
 		}
 	}

@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	cd_command(t_set *set, char **path)
+int	cd_command(char **path)
 {
 	int	i;
 
@@ -33,11 +33,6 @@ int	cd_command(t_set *set, char **path)
 	else
 	{
 		if (path[i + 1])
-		{
-			ft_putendl_fd(" too many arguments", 2);
-			return (1);
-		}
-		if (set->expand == 1)
 		{
 			ft_putendl_fd(" too many arguments", 2);
 			return (1);
