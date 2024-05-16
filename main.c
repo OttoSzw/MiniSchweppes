@@ -39,12 +39,12 @@ int	yes_or_no_builtins(t_set *set, char **c)
 	return (0);
 }
 
-char **find_write(t_set *set, char **cmd)
+char	**find_write(t_set *set, char **cmd)
 {
-	int	i;
-	int	j;
-	int	counter;
-	char **to_copy;
+	int		i;
+	int		j;
+	int		counter;
+	char	**to_copy;
 
 	counter = 0;
 	i = 0;
@@ -56,7 +56,7 @@ char **find_write(t_set *set, char **cmd)
 			while (cmd[i] && ft_strcmp(cmd[i], "echo") != 0)
 			{
 				i++;
-			}	
+			}
 		}
 		i++;
 		if (set->dq != 1)
@@ -87,12 +87,13 @@ char **find_write(t_set *set, char **cmd)
 			while (cmd[i] && ft_strcmp(cmd[i], "echo") != 0)
 			{
 				i++;
-			}	
+			}
 		}
 		i++;
 		if (set->dq != 1)
 		{
-			while (cmd[i] && (ft_strcmp(cmd[i], ">") != 0 && ft_strcmp(cmd[i], ">>") != 0))
+			while (cmd[i] && (ft_strcmp(cmd[i], ">") != 0 && ft_strcmp(cmd[i],
+						">>") != 0))
 			{
 				to_copy[j] = ft_strdup(cmd[i]);
 				// printf("%s\n", to_copy[j]);
@@ -119,9 +120,8 @@ char **find_write(t_set *set, char **cmd)
 
 void	do_builtins(t_set *set, char **c)
 {
-	char **to_write;
-
-	int	i;
+	char	**to_write;
+	int		i;
 
 	i = 0;
 	while (c[i])
@@ -162,14 +162,13 @@ void	executable(t_set *set)
 		do_simple_command(set);
 }
 
-
 void	command(char **c, t_set *set)
-{	
-	int rd;
-	char *file_in;
-	char *file_out;
-	int fd;
-	char **cmd;
+{
+	int		rd;
+	char	*file_in;
+	char	*file_out;
+	int		fd;
+	char	**cmd;
 
 	set->append = 0;
 	set->append = check_append(c);
@@ -230,7 +229,7 @@ void	command(char **c, t_set *set)
 	}
 }
 
-int	check_grammary(char *str)
+int	check_grammary(t_set *set, char *str)
 {
 	int	i;
 
@@ -249,7 +248,7 @@ int	check_grammary(char *str)
 		if (str[i] == '|')
 		{
 			printf("bash: syntax error near unexpected token '|'\n");
-			return (1);
+			return (set->return_value = 2, 2);
 		}
 	}
 	while (str[i])
@@ -259,29 +258,32 @@ int	check_grammary(char *str)
 			if (!str[i + 1])
 			{
 				printf("bash: syntax error near unexpected token 'newline'\n");
-				return (1);
+				return (set->return_value = 2, 2);
 			}
-			else if (str[i + 1] == '>' || str[i + 1] == '<' || str[i + 1] == '\0')
+			else if (str[i + 1] == '>' || str[i + 1] == '<' || str[i
+				+ 1] == '\0')
 			{
 				i++;
 				if (str[i + 1] == '\0')
 				{
 					printf("bash: syntax error near unexpected token 'newline'\n");
-					return (1);
+					return (set->return_value = 2, 2);
 				}
 				else
 				{
 					if (!str[i + 1])
 					{
-						printf("bash: syntax error near unexpected token '%c'\n", str[i + 1]);
-						return (1);
+						printf("bash: syntax error near unexpected token '%c'\n",
+							str[i + 1]);
+						return (set->return_value = 2, 2);
 					}
 					while (str[i + 1] == ' ')
 						i++;
 					if (str[i + 1] == '>' || str[i + 1] == '<')
 					{
-						printf("bash: syntax error near unexpected token '%c'\n", str[i + 1]);
-						return (1);
+						printf("bash: syntax error near unexpected token '%c'\n",
+							str[i + 1]);
+						return (set->return_value = 2, 2);
 					}
 				}
 			}
@@ -291,12 +293,13 @@ int	check_grammary(char *str)
 					i++;
 				if (str[i + 1] == '>' || str[i + 1] == '<')
 				{
-					printf("bash: syntax error near unexpected token '%c'\n", str[i + 1]);
-					return (1);
+					printf("bash: syntax error near unexpected token '%c'\n",
+						str[i + 1]);
+					return (set->return_value = 2, 2);
 				}
 			}
 		}
-		else if(str[i] == '|')
+		else if (str[i] == '|')
 		{
 			if (str[i + 1])
 			{
@@ -306,13 +309,18 @@ int	check_grammary(char *str)
 				if (!str[i])
 				{
 					printf("bash: syntax error near unexpected token '|'\n");
-					return (1);
+					return (set->return_value = 2, 2);
+				}
+				else if (str[i] == '|')
+				{
+					printf("bash: syntax error near unexpected token '|'\n");
+					return (set->return_value = 2, 2);
 				}
 			}
 			else
 			{
 				printf("bash: syntax error near unexpected token '|'\n");
-				return (1);
+				return (set->return_value = 2, 2);
 			}
 		}
 		if (str[i])
@@ -333,10 +341,11 @@ int	main(int ac, char **av, char **env)
 	i = 0;
 	set.env = copy_of_tab(env);
 	set.return_value = 0;
-	set.expand = 0;
 	set.flag_pipe = 0;
 	while (1)
 	{
+	
+		set.expand = 0;
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
 								"n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2"
 								"c\1\033[38;5;202m\2h\1\033[38;5;208m\2w\1\033[38;5;214m\2"
@@ -353,7 +362,7 @@ int	main(int ac, char **av, char **env)
 		{
 			add_history(set.input);
 			set.i = 0;
-			if (check_grammary(set.input) == 0)
+			if (check_grammary(&set, set.input) == 0)
 			{
 				set.cmd = parse(&set);
 			}
@@ -363,7 +372,7 @@ int	main(int ac, char **av, char **env)
 			if (set.expand == 1)
 			{
 				if (expand(&set) == 0)
-					break;
+					break ;
 			}
 			set.size_tab = tab_calculate(set.cmd);
 			executable(&set);

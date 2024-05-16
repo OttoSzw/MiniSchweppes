@@ -90,8 +90,6 @@ void		do_simple_command(t_set *set);
 void		print_tab(char **cmd);
 char		***copy_of_tab_of_tab(t_set *set, char **tab);
 void		parse_for_pipe(t_set *set);
-char		*find_file_in(char **cmd);
-char		*find_file_out(char **cmd);
 void		print_tab(char **cmd);
 void		reset_fd(t_set *set);
 void		init_fd(t_set *set);
@@ -131,6 +129,7 @@ int			check_append(char **cmd);
 int			check_redirections(char **av);
 char		*find_file_out(char **cmd);
 char		*find_file_in(char **cmd);
+char		*find_file_in2(t_set *set, char **cmd);
 int			count_nb_files(char **av);
 char		*find_file_out2(t_set *set, char **cmd);
 

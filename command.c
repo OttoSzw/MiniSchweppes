@@ -125,6 +125,7 @@ void	do_simple_command(t_set *set)
 	rd = check_redirections(set->cmd);
 	nb_files = count_nb_files(set->cmd);
 	file_in = find_file_in(set->cmd);
+	// printf("%s\n", file_in);
 	if (rd && (set->dq != 1 && set->sq != 1))
 	{
 		id = fork();
@@ -194,6 +195,7 @@ void	do_simple_command(t_set *set)
 			else
 			{
 				cmd = copy_tabcmd(set->cmd);
+				// printf("%s\n", cmd[2]);
 				close(set->saved_in);
 				close(set->saved_out);
 				execute_command(set, cmd, set->env);
