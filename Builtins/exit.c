@@ -40,7 +40,7 @@ int	check_errors(char *s, long nb)
 	}
 	if (is_num(s) == 1)
 	{
-		ft_putendl_fd(" numeric argument required", 2);
+		ft_putendl_fd("numeric argument required", 2);
 		return (2);
 	}
 	if (nb < 0 && nb > -255)

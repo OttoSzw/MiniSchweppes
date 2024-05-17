@@ -172,7 +172,7 @@ void	command(char **c, t_set *set)
 
 	set->append = 0;
 	set->append = check_append(c);
-	rd = check_redirections(c);
+	rd = check_redirections(set, c);
 	file_in = find_file_in(c);
 	file_out = find_file_out(c);
 	if (rd)
@@ -211,7 +211,7 @@ void	command(char **c, t_set *set)
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
-		cmd = copy_tabcmd(c);
+		cmd = copy_tabcmd(set, c);
 		execute_command(set, cmd, set->env);
 	}
 	else

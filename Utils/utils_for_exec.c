@@ -50,7 +50,8 @@ void	here_doc(t_set *set, char *limiter, char *av2)
 	if (reader == 0)
 	{
 		close(fd[0]);
-		line = readline(">"); 
+		dup2(set->saved_in, 0);
+		line = readline(">");
 		while (line != NULL)
 		{
 			if (ft_strcmp(line, limiter) == 0)
@@ -64,7 +65,7 @@ void	here_doc(t_set *set, char *limiter, char *av2)
 			if (av2)
 				ft_putendl_fd(line, fd[1]);
 			free(line);
-			line = readline(">"); 
+			line = readline(">");
 		}
 		reset_fd(set);
 		free_struct(set);

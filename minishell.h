@@ -13,16 +13,16 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <signal.h>
-# include <sys/signal.h>
 # include "libft/libft.h"
 # include <errno.h>
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <time.h>
@@ -44,12 +44,14 @@ typedef struct s_set
 	char	**cmd;
 	char	**env;
 	char	**files;
+	int		*rdd;
 	int		size_tab;
 	int		i;
 	int		saved_in;
 	int		saved_out;
 	int		append;
 	int		index;
+	int		index2;
 	int		dq;
 	int		sq;
 	int		return_value;
@@ -93,13 +95,14 @@ void		parse_for_pipe(t_set *set);
 void		print_tab(char **cmd);
 void		reset_fd(t_set *set);
 void		init_fd(t_set *set);
-int			check_redirections(char **av);
+int			check_redirections(t_set *set, char **av);
 int			check_append(char **cmd);
 int			count_cmdpipe(char **av);
-char		**copy_tabcmd(char **cmd);
+char		**copy_tabcmd(t_set *set, char **cmd);
 void		do_builtins(t_set *set, char **c);
 int			yes_or_no_builtins(t_set *set, char **c);
 void		command(char **c, t_set *set);
+int			redir_or_not(char **av);
 
 //	Utils functions for parsing
 
@@ -126,7 +129,6 @@ int			expand_quote(t_set *set, int nb);
 
 // Utils for Files
 int			check_append(char **cmd);
-int			check_redirections(char **av);
 char		*find_file_out(char **cmd);
 char		*find_file_in(char **cmd);
 char		*find_file_in2(t_set *set, char **cmd);
@@ -159,12 +161,11 @@ void		do_child(int ac, char **av, t_pipex *pipex, char **env);
 void		exec_child(int ac, char **av, t_pipex *pipex, char **env);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
-int			check_redirections(char **av);
 void		here_doc(t_set *set, char *limiter, char *av2);
 
 // Utils for free and init
 
-void	init_struct(t_set *set, char **env);
-void	free_struct(t_set *set);
+void		init_struct(t_set *set, char **env);
+void		free_struct(t_set *set);
 
 #endif

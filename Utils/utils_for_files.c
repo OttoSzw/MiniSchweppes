@@ -16,25 +16,57 @@ int	check_append(char **cmd)
 	return (0);
 }
 
-int	check_redirections(char **av)
+int	check_redirections(t_set *set, char **av)
 {
 	int	i;
 	int	j;
 
-	i = 0;
+	i = set->index2;
 	while (av[i])
 	{
 		j = 0;
 		while (av[i][j])
 		{
-			if (av[i][j] == '<' && !av[i][j + 1])
-				return (1);
-			else if (av[i][j] == '>')
+			if (av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] != '>')
+			{
+				set->index2 = i + 1;
 				return (2);
-			else if (av[i][j] == '<' && av[i][j + 1] == '<')
-				return (3);
-			else if (av[i][j] == '>' && av[i][j + 1] == '>')
+			}
+			else if (av[i][j] == '>' && !av[i][j + 1])
+			{
+				set->index2 = i + 1;
+				return (2);
+			}
+			else if (av[i][j] == '>' && av[i][j + 2] && av[i][j + 1] == '>')
+			{
+				set->index2 = i + 1;
 				return (4);
+			}
+			else if (av[i][j] == '>' && !av[i][j + 2] && av[i][j + 1] == '>')
+			{
+				set->index2 = i + 1;
+				return (4);
+			}
+			else if (av[i][j] == '<' && av[i][j + 1] && av[i][j + 1] != '<')
+			{
+				set->index2 = i + 1;
+				return (1);
+			}
+			else if (av[i][j] == '<' && !av[i][j + 1])
+			{
+				set->index2 = i + 1;
+				return (1);
+			}
+			else if (av[i][j] == '<' && av[i][j + 2] && av[i][j + 1] == '<')
+			{
+				set->index2 = i + 1;
+				return (3);
+			}
+			else if (av[i][j] == '<' && !av[i][j + 2] && av[i][j + 1] == '<')
+			{
+				set->index2 = i + 1;
+				return (3);
+			}
 			j++;
 		}
 		i++;
@@ -127,11 +159,17 @@ int	count_nb_files(char **av)
 		j = 0;
 		if (av[i][j] == '>' && !av[i][j + 1])
 			counter++;
+		else if (av[i][j] == '<' && !av[i][j + 1])
+			counter++;
 		while (av[i][j])
 		{
 			if (av[i][j] == '>' && av[i][j + 1] && (av[i][j + 1] != '>' && av[i][j - 1] != '>'))
 				counter++;
 			else if (av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] == '>')
+				counter++;
+			else if (av[i][j] == '<' && av[i][j + 1] && (av[i][j + 1] != '<' && av[i][j - 1] != '<'))
+				counter++;
+			else if (av[i][j] == '<' && av[i][j + 1] && av[i][j + 1] == '<')
 				counter++;
 			if (av[i][j])
 				j++;
@@ -168,6 +206,26 @@ char	*find_file_out2(t_set *set, char **cmd)
 				return (&cmd[i][j + 1]);
 			}
 			else if (cmd[i][j] == '>' && !cmd[i][j + 2] && cmd[i][j + 1] == '>')
+			{
+				set->index = i + 1;
+				return (cmd[i + 1]);
+			}
+			else if (cmd[i][j] == '<' && cmd[i][j + 1] && cmd[i][j + 1] != '<')
+			{
+				set->index = i + 1;
+				return (&cmd[i][j + 1]);
+			}
+			else if (cmd[i][j] == '<' && !cmd[i][j + 1])
+			{
+				set->index = i + 1;
+				return (cmd[i + 1]);
+			}
+			else if (cmd[i][j] == '<' && cmd[i][j + 2] && cmd[i][j + 1] == '<')
+			{
+				set->index = i + 1;
+				return (&cmd[i][j + 1]);
+			}
+			else if (cmd[i][j] == '<' && !cmd[i][j + 2] && cmd[i][j + 1] == '<')
 			{
 				set->index = i + 1;
 				return (cmd[i + 1]);
