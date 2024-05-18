@@ -50,7 +50,8 @@ void	here_doc(t_set *set, char *limiter, char *av2)
 	if (reader == 0)
 	{
 		close(fd[0]);
-		dup2(set->saved_in, 0);
+		if (set->flag_pipe != 1)
+			dup2(set->saved_in, 0);
 		line = readline(">");
 		while (line != NULL)
 		{

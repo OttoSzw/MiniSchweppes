@@ -189,10 +189,7 @@ void	do_simple_command(t_set *set)
 					fd = open(set->files[i], O_RDONLY);
 					if (fd == -1)
 					{
-						free_tab(set->files);
-						free(set->rdd);
-						free_tab(set->env);
-						free_tab(set->cmd);
+						free_struct(set);
 						close(set->saved_in);
 						close(set->saved_out);
 						error_mess();
@@ -246,7 +243,6 @@ void	do_simple_command(t_set *set)
 				close(set->saved_in);
 				close(set->saved_out);
 				execute_command(set, cmd, set->env);
-				free_tab(cmd);
 			}
 			close(set->saved_in);
 			free_struct(set);

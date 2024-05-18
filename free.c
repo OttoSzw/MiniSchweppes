@@ -6,6 +6,8 @@ void	init_struct(t_set *set, char **env)
 	set->env = copy_of_tab(env);
 	set->cmd = NULL;
 	set->files = NULL;
+	set->c = NULL;
+	set->saved_fd = 0;
 	set->rdd = 0;
 	set->return_value = 0;
 	set->flag_pipe = 0;
@@ -25,6 +27,9 @@ void	init_struct(t_set *set, char **env)
 
 void	free_struct(t_set *set)
 {
+	int	j;
+
+	j = 0;
 	if (set->cmd != NULL)
 		free_tab(set->cmd);
 	if (set->env != NULL)

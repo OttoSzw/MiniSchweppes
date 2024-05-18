@@ -41,14 +41,16 @@ typedef struct pipex
 typedef struct s_set
 {
 	char	*input;
+	int		*rdd;
 	char	**cmd;
 	char	**env;
 	char	**files;
-	int		*rdd;
+	char	***c;
 	int		size_tab;
 	int		i;
 	int		saved_in;
 	int		saved_out;
+	int		saved_fd;
 	int		append;
 	int		index;
 	int		index2;
@@ -72,7 +74,7 @@ typedef struct s_expand
 int			echo_command(char **s);
 int			env_command(char **env);
 int			pwd_command(char **s);
-int			cd_command(char **path);
+int			cd_command(t_set *set, char **path);
 int			exit_command(t_set *set, char *s, int size);
 int			unset_command(t_set *set, char **env);
 int			export_command(t_set *set, char **c, int size);
@@ -101,7 +103,7 @@ int			count_cmdpipe(char **av);
 char		**copy_tabcmd(t_set *set, char **cmd);
 void		do_builtins(t_set *set, char **c);
 int			yes_or_no_builtins(t_set *set, char **c);
-void		command(char **c, t_set *set);
+void		command(char ***s, char **c, t_set *set);
 int			redir_or_not(char **av);
 
 //	Utils functions for parsing

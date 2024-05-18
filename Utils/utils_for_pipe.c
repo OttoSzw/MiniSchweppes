@@ -17,6 +17,7 @@ int	check_pipe(t_set *set)
 void	exec_multiple_pipe(char ***c, t_set *set, int size)
 {
 	int	i;
+	int	j;
 	int	pipe_fd[2];
 	int	id;
 	int		status;
@@ -25,6 +26,7 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 
 	init_fd(set);
 	i = 0;
+	j = 0;
 	fd_previous = 0;
 	while (i < size)
 	{
@@ -45,7 +47,10 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 				close(pipe_fd[0]);
 				close(set->saved_in);
 				close(set->saved_out);
-				command(c[i], set);
+				command(c, c[i], set);
+				{
+
+				}
 			}
 			else if (i == (size - 1))
 			{
@@ -53,7 +58,7 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 				close(set->saved_in);
 				close(set->saved_out);
 				close(fd_previous);
-				command(c[i], set);
+				command(c, c[i], set);
 			}
 			else
 			{
@@ -64,7 +69,7 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 				close(set->saved_in);
 				close(set->saved_out);
 				close(fd_previous);
-				command(c[i], set);
+				command(c, c[i], set);
 			}
 		}
 		else
@@ -78,6 +83,7 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 				{
 					close(fd_previous);
 					fd_previous = pipe_fd[0];
+					set->saved_fd = fd_previous;
 					close(pipe_fd[1]);
 				}
 			}
@@ -102,32 +108,30 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 
 void	parse_for_pipe(t_set* set)
 {
-	char ***c;
 	int	nb_arg;
 	int	i;
 	int j;
 
 	i = 0;
 	j = 0;
-	c = copy_of_tab_of_tab(set, set->cmd);
+	set->c = copy_of_tab_of_tab(set, set->cmd);
 	nb_arg = count_cmdpipe(set->cmd);
-	// while (c[i])
+	// while (set->c[i])
 	// {
 	// 	printf("\nCase %d :\n", i);
 	// 	j = 0;
-	// 	while (c[i][j])
+	// 	while (set->c[i][j])
 	// 	{
-	// 		printf("-> : %s\n", c[i][j]);
+	// 		printf("-> : %s\n", set->c[i][j]);
 	// 		j++;
 	// 	}
 	// 	i++;
 	// }
-	j = 0;
-	exec_multiple_pipe(c, set, nb_arg);
-	while (c[j])
+	exec_multiple_pipe(set->c, set, nb_arg);
+	while (set->c[j])
 	{
-		free_tab(c[j]);
+		free_tab(set->c[j]);
 		j++;
 	}
-	free(c);
+	free(set->c);
 }

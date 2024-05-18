@@ -133,7 +133,7 @@ void	do_builtins(t_set *set, char **c)
 			free_tab(to_write);
 		}
 		else if (ft_strcmp("cd", c[i]) == 0)
-			set->return_value = cd_command(c);
+			set->return_value = cd_command(set, c);
 		else if (ft_strcmp("pwd", c[i]) == 0)
 			set->return_value = pwd_command(c);
 		else if (ft_strcmp("env", c[i]) == 0)
@@ -162,57 +162,112 @@ void	executable(t_set *set)
 		do_simple_command(set);
 }
 
-void	command(char **c, t_set *set)
+void	command(char ***s, char **c, t_set *set)
 {
 	int		rd;
-	char	*file_in;
-	char	*file_out;
+	char	*file;
 	int		fd;
 	char	**cmd;
+	int	i;
+	int	j;
+	int	nb_files;
 
+	i = 0;
+	j = 0;
 	set->append = 0;
-	set->append = check_append(c);
-	rd = check_redirections(set, c);
-	file_in = find_file_in(c);
-	file_out = find_file_out(c);
-	if (rd)
+	set->index = 0;
+	set->index2 = 0;
+	rd = redir_or_not(c);
+	nb_files = count_nb_files(c);
+	if (rd && (set->dq != 1 && set->sq != 1))
 	{
-		if (rd == 1)
+		set->files = malloc(sizeof(char *) * (nb_files + 1));
+		set->rdd = malloc(sizeof(int) * (nb_files + 1));
+		if (!set->files)
+			return ;
+		while (i < nb_files)
 		{
-			if (file_in)
+			file = find_file_out2(set, c);
+			rd = check_redirections(set, c);
+			if (file)
 			{
-				fd = open(file_in, O_RDONLY, 0777);
+				set->files[i] = ft_strdup(file);
+				set->rdd[i] = rd;
+			}
+			i++;
+		}
+		set->files[i] = NULL;
+		set->rdd[i] = -1;
+		i = 0;
+		while (i < nb_files)
+		{
+			if (set->rdd[i] == 1)
+			{
+				fd = open(set->files[i], O_RDONLY);
 				if (fd == -1)
 				{
+					free_struct(set);
+					while (s[j])
+					{
+						free_tab(s[j]);
+						j++;
+					}
+					free(s);
+					close(set->saved_in);
+					close(set->saved_out);
 					error_mess();
 				}
 				dup2(fd, STDIN_FILENO);
 				close(fd);
 			}
-		}
-		else if (rd == 3)
-			here_doc(set, c[1], c[2]);
-		if (file_out)
-		{
-			if (set->append == 1)
+			else if (set->rdd[i] == 3)
 			{
-				fd = open(file_out, O_WRONLY | O_CREAT | O_APPEND, 0777);
-				if (fd == -1)
-					error_mess();
-			}
-			else
-			{
-				fd = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-				if (fd == -1)
+				here_doc(set, set->files[i], c[2]);
+				if (!c[2])
 				{
-					error_mess();
+					reset_fd(set);
+					free_struct(set);
+					exit(0);
 				}
 			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
+			else if (set->rdd[i] == 4)
+			{
+				fd = open(set->files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+				if (fd == -1)
+					error_mess();
+				dup2(fd, STDOUT_FILENO);
+				close(fd);
+			}
+			else if (set->rdd[i] == 2)
+			{
+				fd = open(set->files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if (fd == -1)
+					error_mess();
+				dup2(fd, STDOUT_FILENO);
+				close(fd);
+			}
+			i++;
 		}
-		cmd = copy_tabcmd(set, c);
-		execute_command(set, cmd, set->env);
+		if (yes_or_no_builtins(set, set->cmd) == 1)
+		{
+			do_builtins(set, c);
+			free_struct(set);
+			exit(set->return_value);
+		}
+		else
+		{
+			cmd = copy_tabcmd(set, c);
+			if (!cmd)
+			{
+				close(set->saved_in);
+				free_struct(set);
+				close(set->saved_out);
+				exit (1);
+			}
+			close(set->saved_in);
+			close(set->saved_out);
+			execute_command(set, cmd, set->env);
+		}
 	}
 	else
 	{
@@ -224,6 +279,8 @@ void	command(char **c, t_set *set)
 		}
 		else
 		{
+			close(set->saved_in);
+			close(set->saved_out);
 			execute_command(set, c, set->env);
 		}
 	}
@@ -343,6 +400,7 @@ int	main(int ac, char **av, char **env)
 	while (1)
 	{
 		set.expand = 0;
+		set.flag_pipe = 0;
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
 								"n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2"
 								"c\1\033[38;5;202m\2h\1\033[38;5;208m\2w\1\033[38;5;214m\2"
