@@ -183,9 +183,8 @@ void	execute_command(t_set* set, char **av, char **env)
 	}
 	if (execve(path, cmd, env) == -1)
 	{
-		printf("1\n");
+		free_struct(set);
 		free_tab(cmd);
-		free_tab(env);
 		free_tab(av);
 		escape(path);
 	}

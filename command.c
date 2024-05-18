@@ -27,21 +27,24 @@ int	count_arg(char **cmd)
 
 	i = 0;
 	count = 0;
-	if (ft_strcmp("<", cmd[i]) == 0)
-	{
-		i++;
-		if (access(cmd[1], F_OK) == -1)
-			error_mess();
-		i++;
-	}
 	while (cmd[i])
 	{
-		if (ft_strcmp(">", cmd[i]) == 0)
+		if (ft_strcmp("<", cmd[i]) == 0)
 		{
-			return (count);
+			i += 2;
 		}
-		count++;
-		i++;
+		else if (ft_strcmp(">", cmd[i]) == 0)
+			i += 2;
+		else if (ft_strcmp("<<", cmd[i]) == 0)
+			i += 2;
+		else if (ft_strcmp(">>", cmd[i]) == 0)
+			i += 2;
+		while (cmd[i] && (ft_strcmp(">", cmd[i]) != 0 && ft_strcmp(">>",
+					cmd[i]) != 0 && ft_strcmp("<", cmd[i]) != 0 && ft_strcmp("<<", cmd[i]) != 0))
+		{
+			count++;
+			i++;
+		}
 	}
 	return (count);
 }
@@ -51,14 +54,17 @@ char	**copy_tabcmd(t_set *set, char **cmd)
 	char	**copy;
 	int		i;
 	int		j;
-	int		oui;
+	int	size;
 
+	size = count_arg(cmd);
 	i = 0;
 	j = 0;
-	oui = 0;
 	(void)set;
-	copy = (char **)malloc(sizeof(char *) * (count_arg(cmd) + 1));
-	while (cmd[i] && oui != 1)
+	if (size != 0)
+		copy = (char **)malloc(sizeof(char *) * (size + 1));
+	else
+		return (NULL);
+	while (cmd[i])
 	{
 		if (ft_strcmp("<", cmd[i]) == 0)
 		{
@@ -229,6 +235,13 @@ void	do_simple_command(t_set *set)
 			else
 			{
 				cmd = copy_tabcmd(set, set->cmd);
+				if (!cmd)
+				{
+					close(set->saved_in);
+					free_struct(set);
+					close(set->saved_out);
+					exit (1);
+				}
 				// print_tab(cmd);
 				close(set->saved_in);
 				close(set->saved_out);
