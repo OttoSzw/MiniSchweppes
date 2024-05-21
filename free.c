@@ -7,6 +7,8 @@ void	init_struct(t_set *set, char **env)
 	set->cmd = NULL;
 	set->files = NULL;
 	set->c = NULL;
+	set->file = NULL;
+	set->need_to_free = 0;
 	set->saved_fd = 0;
 	set->rdd = 0;
 	set->return_value = 0;
@@ -40,4 +42,13 @@ void	free_struct(t_set *set)
 		free(set->input);
 	if (set->rdd != 0)
 		free(set->rdd);
+	if (set->c != NULL)
+	{
+		while (set->c[j])
+		{
+			free(set->c[j]);
+			j++;
+		}
+		free(set->c);
+	}
 }

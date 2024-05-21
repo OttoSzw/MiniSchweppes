@@ -38,6 +38,7 @@ char	*copy_normal(t_set *set)
 		}
 		i++;
 	}
+	// printf("expand laaa : %d\n", set->expand);
 	// printf("la taille est de %d\n\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	if (!tempo)

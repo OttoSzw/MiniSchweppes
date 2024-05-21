@@ -45,8 +45,10 @@ typedef struct s_set
 	char	**cmd;
 	char	**env;
 	char	**files;
+	char 	*file;
 	char	***c;
 	int		size_tab;
+	int		need_to_free;
 	int		i;
 	int		saved_in;
 	int		saved_out;
@@ -163,7 +165,7 @@ void		do_child(int ac, char **av, t_pipex *pipex, char **env);
 void		exec_child(int ac, char **av, t_pipex *pipex, char **env);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
-void		here_doc(t_set *set, char *limiter, char *av2);
+void		here_doc(t_set *set, char *limiter, char *av2, int file);
 
 // Utils for free and init
 

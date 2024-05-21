@@ -185,6 +185,8 @@ char	*find_file_out2(t_set *set, char **cmd)
 	int j;
 
 	i = set->index;
+	if (!cmd)
+		return (NULL);
 	while (cmd[i])
 	{
 		j = 0;

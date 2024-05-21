@@ -173,7 +173,6 @@ void	command(char ***s, char **c, t_set *set)
 	int	nb_files;
 
 	i = 0;
-	j = 0;
 	set->append = 0;
 	set->index = 0;
 	set->index2 = 0;
@@ -201,11 +200,12 @@ void	command(char ***s, char **c, t_set *set)
 		i = 0;
 		while (i < nb_files)
 		{
-			if (set->rdd[i] == 1)
+			if (set->rdd[i] == 1 || set->rdd[i] == 3)
 			{
 				fd = open(set->files[i], O_RDONLY);
 				if (fd == -1)
 				{
+					j = 0;
 					free_struct(set);
 					while (s[j])
 					{
@@ -218,17 +218,9 @@ void	command(char ***s, char **c, t_set *set)
 					error_mess();
 				}
 				dup2(fd, STDIN_FILENO);
+				if (set->rdd[i] == 3)
+					unlink(set->files[i]);
 				close(fd);
-			}
-			else if (set->rdd[i] == 3)
-			{
-				here_doc(set, set->files[i], c[2]);
-				if (!c[2])
-				{
-					reset_fd(set);
-					free_struct(set);
-					exit(0);
-				}
 			}
 			else if (set->rdd[i] == 4)
 			{
@@ -264,6 +256,7 @@ void	command(char ***s, char **c, t_set *set)
 				close(set->saved_out);
 				exit (1);
 			}
+			set->need_to_free = 1;
 			close(set->saved_in);
 			close(set->saved_out);
 			execute_command(set, cmd, set->env);
@@ -386,6 +379,54 @@ int	check_grammary(t_set *set, char *str)
 	return (0);
 }
 
+char	*do_here_doc(t_set *set, int nb, char *limiter, char *and)
+{
+	char *number;
+	char *file;
+	int fd;
+
+	number = ft_itoa(nb);
+	file = ft_strdup(".infile_");
+	set->file = ft_strjoin(file, number);
+	free(number);
+	free(file);
+	fd = open(set->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		printf("Chef c est mauvais la\n");
+		return (NULL);
+	}
+	here_doc(set, limiter, and, fd);
+	close(fd);
+	reset_fd(set);
+	return (set->file);
+}
+
+void	here_doggy(t_set *set)
+{
+	int	i;
+	int	nb;
+	char *file;
+	 
+
+	i = 0;
+	nb = 0;
+	
+	while (set->cmd[i])
+	{
+		if (ft_strcmp("<<", set->cmd[i]) == 0)
+		{
+			i++;
+			file = do_here_doc(set, nb, set->cmd[i], set->cmd[i + 1]);
+			free(set->cmd[i]);
+			set->cmd[i] = ft_strdup(file);
+			free(set->file);
+			nb++;
+		}
+		i++;
+	}
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_set	set;
@@ -420,6 +461,7 @@ int	main(int ac, char **av, char **env)
 			if (check_grammary(&set, set.input) == 0)
 			{
 				set.cmd = parse(&set);
+				here_doggy(&set);
 			}
 		}
 		if (set.cmd)

@@ -48,9 +48,6 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 				close(set->saved_in);
 				close(set->saved_out);
 				command(c, c[i], set);
-				{
-
-				}
 			}
 			else if (i == (size - 1))
 			{
@@ -128,6 +125,7 @@ void	parse_for_pipe(t_set* set)
 	// 	i++;
 	// }
 	exec_multiple_pipe(set->c, set, nb_arg);
+	j = 0;
 	while (set->c[j])
 	{
 		free_tab(set->c[j]);

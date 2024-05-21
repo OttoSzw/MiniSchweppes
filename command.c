@@ -184,7 +184,7 @@ void	do_simple_command(t_set *set)
 			i = 0;
 			while (i < nb_files)
 			{
-				if (set->rdd[i] == 1)
+				if (set->rdd[i] == 1 || set->rdd[i] == 3)
 				{
 					fd = open(set->files[i], O_RDONLY);
 					if (fd == -1)
@@ -197,16 +197,16 @@ void	do_simple_command(t_set *set)
 					dup2(fd, STDIN_FILENO);
 					close(fd);
 				}
-				else if (set->rdd[i] == 3)
-				{
-					here_doc(set, set->files[i], set->cmd[2]);
-					if (!set->cmd[2])
-					{
-						reset_fd(set);
-						free_struct(set);
-						exit(0);
-					}
-				}
+				// else if (set->rdd[i] == 3)
+				// {
+				// 	here_doc(set, set->files[i], set->cmd[2]);
+				// 	if (!set->cmd[2])
+				// 	{
+				// 		reset_fd(set);
+				// 		free_struct(set);
+				// 		exit(0);
+				// 	}
+				// }
 				else if (set->rdd[i] == 4)
 				{
 					fd = open(set->files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -239,6 +239,7 @@ void	do_simple_command(t_set *set)
 					close(set->saved_out);
 					exit (1);
 				}
+				set->need_to_free = 1;
 				// print_tab(cmd);
 				close(set->saved_in);
 				close(set->saved_out);

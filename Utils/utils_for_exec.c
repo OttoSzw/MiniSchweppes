@@ -12,32 +12,7 @@
 
 #include "../minishell.h"
 
-// int	get_next_line2(char **line)
-// {
-// 	char	*buffer;
-// 	int		i;
-// 	int		r;
-// 	char	c;
-
-// 	i = 0;
-// 	r = 0;
-// 	buffer = (char *)calloc(10000, 1);
-// 	if (!buffer)
-// 		return (-1);
-// 	r = read(0, &c, 1);
-// 	while (r && c != '\n' && c != '\0')
-// 	{
-// 		if (c != '\n' && c != '\0')
-// 			buffer[i] = c;
-// 		i++;
-// 		r = read(0, &c, 1);
-// 	}
-// 	buffer[++i] = '\0';
-// 	*line = buffer;
-// 	return (r);
-// }
-
-void	here_doc(t_set *set, char *limiter, char *av2)
+void	here_doc(t_set *set, char *limiter, char *av2, int file)
 {
 	pid_t	reader;
 	int		fd[2];
@@ -46,30 +21,34 @@ void	here_doc(t_set *set, char *limiter, char *av2)
 	line = NULL;
 	if (pipe(fd) == -1)
 		error_mess();
+	init_fd(set);
 	reader = fork();
+	dup2(set->saved_in, 0);
 	if (reader == 0)
 	{
 		close(fd[0]);
-		if (set->flag_pipe != 1)
-			dup2(set->saved_in, 0);
 		line = readline(">");
 		while (line != NULL)
 		{
 			if (ft_strcmp(line, limiter) == 0)
 			{
 				free(line);
-				close(fd[1]);
+				free(set->file);
 				reset_fd(set);
 				free_struct(set);
+				close(fd[1]);
+				close(file);
 				exit(EXIT_SUCCESS);
 			}
 			if (av2)
-				ft_putendl_fd(line, fd[1]);
+				ft_putendl_fd(line, file);
 			free(line);
 			line = readline(">");
 		}
+		free(set->file);
 		reset_fd(set);
 		free_struct(set);
+		close(file);
 		close(fd[1]);
 		exit(1);
 	}
@@ -107,11 +86,10 @@ void	error_cmd(void)
 int	error_mess(void)
 {
 	// char	*s;
-
 	// s = "Error";
 	// printf("1\n");
 	perror(NULL);
-	exit (EXIT_FAILURE);
+	exit(EXIT_FAILURE);
 }
 
 char	*find_path(char *cmd, char **env)
@@ -147,7 +125,7 @@ void	escape(char *path)
 	error_mess();
 }
 
-void	execute_command(t_set* set, char **av, char **env)
+void	execute_command(t_set *set, char **av, char **env)
 {
 	char	**cmd;
 	char	*path;
@@ -165,19 +143,25 @@ void	execute_command(t_set* set, char **av, char **env)
 	{
 		path = ft_strdup(cmd[0]);
 		if (!path)
-		{
-	 		escape(path);
-		}
+			escape(path);
 	}
 	else
 	{
 		path = find_path(cmd[0], env);
 		if (!path)
 		{
-			free_tab(cmd);
 			ft_putstr_fd("bash : ", 2);
 			ft_putstr_fd(av[0], 2);
 			ft_putstr_fd(": command not found\n", 2);
+			if (set->need_to_free == 1)
+			{
+				free_tab(av);
+				free_tab(cmd);
+				free_struct(set);
+				exit(127);
+			}
+			if (!av[1])
+				free_tab(cmd);
 			free_struct(set);
 			exit(127);
 		}
