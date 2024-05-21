@@ -42,13 +42,28 @@ void	free_struct(t_set *set)
 		free(set->input);
 	if (set->rdd != 0)
 		free(set->rdd);
+	j = 0;
 	if (set->c != NULL)
 	{
 		while (set->c[j])
 		{
-			free(set->c[j]);
+			free_tab(set->c[j]);
 			j++;
 		}
 		free(set->c);
 	}
+}
+
+void	free_struct2(t_set *set)
+{
+	if (set->cmd != NULL)
+		free_tab(set->cmd);
+	if (set->env != NULL)
+		free_tab(set->env);
+	if (set->files != NULL)
+		free_tab(set->files);
+	if (set->input != NULL)
+		free(set->input);
+	if (set->rdd != 0)
+		free(set->rdd);
 }

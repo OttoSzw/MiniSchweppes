@@ -45,8 +45,9 @@ typedef struct s_set
 	char	**cmd;
 	char	**env;
 	char	**files;
-	char 	*file;
+	char	*file;
 	char	***c;
+	int		round;
 	int		size_tab;
 	int		need_to_free;
 	int		i;
@@ -171,5 +172,6 @@ void		here_doc(t_set *set, char *limiter, char *av2, int file);
 
 void		init_struct(t_set *set, char **env);
 void		free_struct(t_set *set);
+void		free_struct2(t_set *set);
 
 #endif

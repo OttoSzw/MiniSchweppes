@@ -206,7 +206,7 @@ void	command(char ***s, char **c, t_set *set)
 				if (fd == -1)
 				{
 					j = 0;
-					free_struct(set);
+					free_struct2(set);
 					while (s[j])
 					{
 						free_tab(s[j]);
@@ -268,6 +268,7 @@ void	command(char ***s, char **c, t_set *set)
 		{
 			do_builtins(set, c);
 			free_struct(set);
+			
 			exit(set->return_value);
 		}
 		else
@@ -461,7 +462,8 @@ int	main(int ac, char **av, char **env)
 			if (check_grammary(&set, set.input) == 0)
 			{
 				set.cmd = parse(&set);
-				here_doggy(&set);
+				if (set.cmd != NULL)
+					here_doggy(&set);
 			}
 		}
 		if (set.cmd)

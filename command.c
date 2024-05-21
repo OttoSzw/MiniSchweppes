@@ -235,7 +235,7 @@ void	do_simple_command(t_set *set)
 				if (!cmd)
 				{
 					close(set->saved_in);
-					free_struct(set);
+					free_struct2(set);
 					close(set->saved_out);
 					exit (1);
 				}
@@ -246,7 +246,7 @@ void	do_simple_command(t_set *set)
 				execute_command(set, cmd, set->env);
 			}
 			close(set->saved_in);
-			free_struct(set);
+			free_struct2(set);
 			close(set->saved_out);
 			exit (1);
 		}

@@ -35,12 +35,12 @@ void	here_doc(t_set *set, char *limiter, char *av2, int file)
 				free(line);
 				free(set->file);
 				reset_fd(set);
-				free_struct(set);
+				free_struct2(set);
 				close(fd[1]);
 				close(file);
 				exit(EXIT_SUCCESS);
 			}
-			if (av2)
+			if (av2 && ft_strcmp("|", av2) != 0)
 				ft_putendl_fd(line, file);
 			free(line);
 			line = readline(">");
