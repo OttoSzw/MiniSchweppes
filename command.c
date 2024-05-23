@@ -264,16 +264,25 @@ void	do_simple_command(t_set *set)
 		}
 		else
 		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
 			id = fork();
 			if (id == 0)
 			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				close(set->saved_in);
 				close(set->saved_out);
 				execute_command(set, set->cmd, set->env);
 			}
 			reset_fd(set);
 			waitpid(id, &status, 0);
-			if (WIFEXITED(status))
+			if (WIFSIGNALED(status))
+			{
+				set->return_value = WTERMSIG(status);
+				set->return_value += 128;
+			}
+			else if (WIFEXITED(status))
 				set->return_value = WEXITSTATUS(status);
 		}
 	}

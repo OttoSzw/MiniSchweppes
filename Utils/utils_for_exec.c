@@ -12,53 +12,63 @@
 
 #include "../minishell.h"
 
+extern int	g_signal;
+
+int	get_next_line2(char **line)
+{
+	char	*buffer;
+	int		i;
+	int		r;
+	char	c;
+
+	i = 0;
+	r = 0;
+	c = 0;
+	buffer = (char *)calloc(10000, 1);
+	if (!buffer)
+		return (-1);
+	r = read(0, &c, 1);
+	if (r == 0)
+	{
+		free(buffer);
+		*line = NULL;
+		return (r);
+	}
+	while (r && c != '\n' && c != '\0')
+	{
+		if (c != '\n' && c != '\0')
+			buffer[i] = c;
+		i++;
+		r = read(0, &c, 1);
+	}
+	buffer[++i] = '\0';
+	*line = buffer;
+	return (r);
+}
+
 void	here_doc(t_set *set, char *limiter, char *av2, int file)
 {
-	pid_t	reader;
-	int		fd[2];
 	char	*line;
 
+	g_signal = 2;
 	line = NULL;
-	if (pipe(fd) == -1)
-		error_mess();
 	init_fd(set);
-	reader = fork();
 	dup2(set->saved_in, 0);
-	if (reader == 0)
+	while (1)
 	{
-		close(fd[0]);
-		line = readline(">");
-		while (line != NULL)
+		get_next_line2(&line);
+		if (ft_strcmp(line, limiter) == 0 || line == NULL || g_signal == 130)
 		{
-			if (ft_strcmp(line, limiter) == 0)
-			{
+			if (line)
 				free(line);
-				free(set->file);
-				reset_fd(set);
-				free_struct2(set);
-				close(fd[1]);
-				close(file);
-				exit(EXIT_SUCCESS);
-			}
-			if (av2 && ft_strcmp("|", av2) != 0)
-				ft_putendl_fd(line, file);
-			free(line);
-			line = readline(">");
+			close(file);
+			break ;
 		}
-		free(set->file);
-		reset_fd(set);
-		free_struct2(set);
-		close(file);
-		close(fd[1]);
-		exit(1);
+		if (av2 && ft_strcmp("|", av2) != 0)
+			ft_putendl_fd(line, file);
+		free(line);
 	}
-	else
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
-		wait(NULL);
-	}
+	close(file);
 }
 
 void	free_paths(char **split)

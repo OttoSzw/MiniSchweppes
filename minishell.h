@@ -19,6 +19,7 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -173,5 +174,9 @@ void		here_doc(t_set *set, char *limiter, char *av2, int file);
 void		init_struct(t_set *set, char **env);
 void		free_struct(t_set *set);
 void		free_struct2(t_set *set);
+
+//Signals
+
+void	handle_sigint(int sig);
 
 #endif

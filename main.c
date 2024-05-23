@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int		g_signal;
+
 int	yes_or_no_builtins(t_set *set, char **c)
 {
 	int	i;
@@ -168,9 +170,9 @@ void	command(char ***s, char **c, t_set *set)
 	char	*file;
 	int		fd;
 	char	**cmd;
-	int	i;
-	int	j;
-	int	nb_files;
+	int		i;
+	int		j;
+	int		nb_files;
 
 	i = 0;
 	set->append = 0;
@@ -254,7 +256,7 @@ void	command(char ***s, char **c, t_set *set)
 				close(set->saved_in);
 				free_struct(set);
 				close(set->saved_out);
-				exit (1);
+				exit(1);
 			}
 			set->need_to_free = 1;
 			close(set->saved_in);
@@ -268,7 +270,6 @@ void	command(char ***s, char **c, t_set *set)
 		{
 			do_builtins(set, c);
 			free_struct(set);
-			
 			exit(set->return_value);
 		}
 		else
@@ -387,9 +388,9 @@ int	check_grammary(t_set *set, char *str)
 
 char	*do_here_doc(t_set *set, int nb, char *limiter, char *and)
 {
-	char *number;
-	char *file;
-	int fd;
+	char	*number;
+	char	*file;
+	int		fd;
 
 	number = ft_itoa(nb);
 	file = ft_strdup(".infile_");
@@ -410,14 +411,12 @@ char	*do_here_doc(t_set *set, int nb, char *limiter, char *and)
 
 void	here_doggy(t_set *set)
 {
-	int	i;
-	int	nb;
-	char *file;
-	 
+	int		i;
+	int		nb;
+	char	*file;
 
 	i = 0;
 	nb = 0;
-	
 	while (set->cmd[i])
 	{
 		if (ft_strcmp("<<", set->cmd[i]) == 0)
@@ -443,20 +442,31 @@ int	main(int ac, char **av, char **env)
 	if (ac < 1)
 		return (1);
 	i = 0;
+	g_signal = 0;
 	init_struct(&set, env);
 	while (1)
 	{
+		// printf("%d\n", g_signal);
 		set.expand = 0;
 		set.flag_pipe = 0;
+		g_signal = 0;
+		// printf("signal = %d\n", g_signal);
+		// printf("return = %d\n", set.return_value);
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
-								"n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2"
-								"c\1\033[38;5;202m\2h\1\033[38;5;208m\2w\1\033[38;5;214m\2"
-								"e\1\033[38;5;220m\2p\1\033[38;5;226m\2p\1\033[38;5;220m\2"
-								"e\1\033[38;5;214m\2s\1\033[38;5;208m\2 \1\033[38;5;208m\2"
-								">\1\033[0m ");
+							"n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2"
+							"c\1\033[38;5;202m\2h\1\033[38;5;208m\2w\1\033[38;5;214m\2"
+							"e\1\033[38;5;220m\2p\1\033[38;5;226m\2p\1\033[38;5;220m\2"
+							"e\1\033[38;5;214m\2s\1\033[38;5;208m\2 \1\033[38;5;208m\2"
+							">\1\033[0m ");
+		if (g_signal == 130)
+		{
+			set.return_value = g_signal;
+			g_signal = 0;
+		}
 		if (set.input == NULL)
 		{
 			free_tab(set.env);
+			printf("exit");
 			return (0);
 		}
 		set.cmd = NULL;
