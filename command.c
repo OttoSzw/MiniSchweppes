@@ -158,20 +158,21 @@ void	do_simple_command(t_set *set)
 	// printf("%d\n", set->dq);
 	if (rd && (set->dq != 1 && set->sq != 1))
 	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		id = fork();
 		if (id == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			set->files = malloc(sizeof(char *) * (nb_files + 1));
 			set->rdd = malloc(sizeof(int) * (nb_files + 1));
 			if (!set->files)
 				return ;
-			// printf("nb files : %d\n", nb_files);
 			while (i < nb_files)
 			{
 				file = find_file_out2(set, set->cmd);
 				rd = check_redirections(set, set->cmd);
-				// printf("file %d : %s\n", i, file);
-				// printf("rd   %d : %d\n", i, rd);
 				if (file)
 				{
 					set->files[i] = ft_strdup(file);
@@ -195,18 +196,10 @@ void	do_simple_command(t_set *set)
 						error_mess();
 					}
 					dup2(fd, STDIN_FILENO);
+					if (set->rdd[i] == 3)
+						unlink(set->files[i]);
 					close(fd);
 				}
-				// else if (set->rdd[i] == 3)
-				// {
-				// 	here_doc(set, set->files[i], set->cmd[2]);
-				// 	if (!set->cmd[2])
-				// 	{
-				// 		reset_fd(set);
-				// 		free_struct(set);
-				// 		exit(0);
-				// 	}
-				// }
 				else if (set->rdd[i] == 4)
 				{
 					fd = open(set->files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);

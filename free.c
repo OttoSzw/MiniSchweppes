@@ -30,7 +30,6 @@ void	signals(void)
 
 void	init_struct(t_set *set, char **env)
 {
-	signals();
 	set->input = NULL;
 	set->env = copy_of_tab(env);
 	set->cmd = NULL;

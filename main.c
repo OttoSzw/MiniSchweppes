@@ -446,12 +446,9 @@ int	main(int ac, char **av, char **env)
 	init_struct(&set, env);
 	while (1)
 	{
-		// printf("%d\n", g_signal);
+		signals();
 		set.expand = 0;
 		set.flag_pipe = 0;
-		g_signal = 0;
-		// printf("signal = %d\n", g_signal);
-		// printf("return = %d\n", set.return_value);
 		set.input = readline("\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2"
 							"n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2"
 							"c\1\033[38;5;202m\2h\1\033[38;5;208m\2w\1\033[38;5;214m\2"

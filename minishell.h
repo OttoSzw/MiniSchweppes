@@ -19,7 +19,6 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
-# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -175,8 +174,9 @@ void		init_struct(t_set *set, char **env);
 void		free_struct(t_set *set);
 void		free_struct2(t_set *set);
 
-//Signals
+// Signals
 
-void	handle_sigint(int sig);
+void		handle_sigint(int sig);
+void		signals(void);
 
 #endif

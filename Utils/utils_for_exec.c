@@ -53,7 +53,6 @@ void	here_doc(t_set *set, char *limiter, char *av2, int file)
 	g_signal = 2;
 	line = NULL;
 	init_fd(set);
-	dup2(set->saved_in, 0);
 	while (1)
 	{
 		get_next_line2(&line);

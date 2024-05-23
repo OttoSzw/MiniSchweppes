@@ -35,11 +35,15 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 			if (pipe(pipe_fd) == -1)
 			error_mess();
 		}
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		id = fork();
 		if (id == -1)
 			error_mess();
 		if (id == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			if (i == 0)
 			{
 				dup2(pipe_fd[1], STDOUT_FILENO);
