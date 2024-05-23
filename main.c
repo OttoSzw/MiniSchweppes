@@ -367,6 +367,11 @@ int	check_grammary(t_set *set, char *str)
 					printf("bash: syntax error near unexpected token `|'\n");
 					return (set->return_value = 2, 2);
 				}
+				else if (str[i] == '>' || str[i] == '<')
+				{
+					printf("bash: syntax error near unexpected token `|'\n");
+					return (set->return_value = 2, 2);
+				}
 			}
 			else
 			{

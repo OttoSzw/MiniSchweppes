@@ -93,7 +93,7 @@ char	*copy_normal(t_set *set)
 					if (set->input[i] && (set->input[i] == '\'' && set->input[i
 							+ 1] != ' '))
 					{
-						i++;
+						// i++;
 						if (set->input[i] == ' ')
 						{
 							set->i = i;
@@ -102,11 +102,15 @@ char	*copy_normal(t_set *set)
 						}
 					}
 				}
-				if (set->input[i])
+				if (set->input[i] && (set->input[i] != '\'' && set->input[i + 1] != ' '))
+				{
+					printf("%c\n", set->input[i]);
+					printf("1\n");
 					i++;
+				}
 			}
 		}
-		else if (set->input[i] != '\0' && (set->input[i] != '\''
+		if (set->input[i] != '\0' && (set->input[i] != '\''
 				&& set->input[i] != '\"'))
 			tempo[j++] = set->input[i];
 		if (set->input[i] != ' ')
@@ -114,7 +118,7 @@ char	*copy_normal(t_set *set)
 	}
 	set->i = i;
 	tempo[j] = '\0';
-	// printf("tempo = %s\n", tempo);
+	// printf("tempo = %s|\n", tempo);
 	return (tempo);
 }
 
@@ -179,6 +183,8 @@ int	find_size_quotes(t_set *set, int i)
 			if (check_dollar(set->input))
 				set->expand = 1;
 			i++;
+			if (set->input[i] == '\"')
+				i++;
 			while (set->input[i] && set->input[i] != '\"')
 			{
 				i++;
@@ -206,6 +212,8 @@ int	find_size_quotes(t_set *set, int i)
 				set->expand = 1;
 			}
 			i++;
+			if (set->input[i] == '\'')
+				i++;
 			while (set->input[i] && set->input[i] != '\'')
 			{
 				i++;
@@ -214,7 +222,7 @@ int	find_size_quotes(t_set *set, int i)
 						+ 1] != ' '))
 				{
 					i++;
-					while (set->input[i])
+					while (set->input[i] && set->input[i] != ' ')
 					{
 						i++;
 						counter++;
@@ -227,7 +235,7 @@ int	find_size_quotes(t_set *set, int i)
 		if (set->input[i])
 			i++;
 	}
-	printf("%d\n", counter);
+	// printf("%d\n", counter);
 	return (counter);
 }
 
@@ -244,11 +252,19 @@ char *find_arg_quoted(t_set *set, int i, int counter, int block)
 		if (set->input[i] == '\"')
 		{
 			i++;
+			if (set->input[i] == '\"')
+				i++;
 			while (set->input[i] != '\"')
 			{
 				tempo[j] = set->input[i];
 				i++;
 				j++;
+				if (!set->input[i])
+				{
+					set->i = i;
+					tempo[j] = '\0';
+					return (tempo);
+				}
 				if (set->input[i] && (set->input[i] == '\"' && set->input[i
 						+ 1] != ' '))
 				{
@@ -288,6 +304,8 @@ char *find_arg_quoted(t_set *set, int i, int counter, int block)
 			else
 			{
 				i++;
+				if (set->input[i] == '\'')
+					i++;
 				while (set->input[i] && set->input[i] != '\'')
 				{
 					tempo[j] = set->input[i];
@@ -297,7 +315,7 @@ char *find_arg_quoted(t_set *set, int i, int counter, int block)
 							+ 1] != ' '))
 					{
 						i++;
-						while (set->input[i])
+						while (set->input[i] && set->input[i] != ' ')
 						{
 							tempo[j] = set->input[i];
 							i++;
@@ -329,6 +347,8 @@ char	*copy_quotes(t_set *set)
 
 	i = set->i;
 	counter = find_size_quotes(set, i);
+	// printf("%d\n", counter);
+	// printf("counter %d\n", counter);
 	i = set->i;
 	block = i;
 	tempo = find_arg_quoted(set, i, counter, block);
@@ -370,9 +390,11 @@ int	find_size_parse(t_set *set)
 		if (set->input[i] == '\'')
 		{
 			i++;
+			if (set->input[i] == '\'')
+				i++;
 			if (set->input[i] != '\'')
 				counter++;
-			while (set->input[i] != '\'')
+			while (set->input[i] && set->input[i] != '\'')
 				i++;
 			while (set->input[i] != '\0' && set->input[i] != ' ')
 				i++;
@@ -380,9 +402,11 @@ int	find_size_parse(t_set *set)
 		else if (set->input[i] == '\"')
 		{
 			i++;
-			if (set->input[i] != '"')
+			if (set->input[i] == '\"')
+				i++;
+			if (set->input[i] != '\"')
 				counter++;
-			while (set->input[i] != '\"')
+			while (set->input[i] && set->input[i] != '\"')
 				i++;
 			while (set->input[i] != '\0' && set->input[i] != ' ')
 				i++;

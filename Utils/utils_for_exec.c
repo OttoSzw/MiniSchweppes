@@ -47,7 +47,7 @@ void	here_doc(t_set *set, char *limiter, char *av2, int file)
 		}
 		free(set->file);
 		reset_fd(set);
-		free_struct(set);
+		free_struct2(set);
 		close(file);
 		close(fd[1]);
 		exit(1);
@@ -157,18 +157,27 @@ void	execute_command(t_set *set, char **av, char **env)
 			{
 				free_tab(av);
 				free_tab(cmd);
-				free_struct(set);
+				if (set->flag_pipe == 0)
+					free_struct2(set);
+				else
+					free_struct(set);
 				exit(127);
 			}
 			if (!av[1])
 				free_tab(cmd);
-			free_struct(set);
+			if (set->flag_pipe == 0)
+				free_struct2(set);
+			else
+				free_struct(set);
 			exit(127);
 		}
 	}
 	if (execve(path, cmd, env) == -1)
 	{
-		free_struct(set);
+		if (set->flag_pipe == 0)
+			free_struct2(set);
+		else
+			free_struct(set);
 		free_tab(cmd);
 		free_tab(av);
 		escape(path);
