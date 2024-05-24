@@ -19,9 +19,21 @@ void	change_var_of_env(t_set *set)
 	char	cwd[1024];
 	char	*index;
 	char	*content;
+	char	*line;
 
 	i = 0;
-	content = ft_strdup(getcwd(cwd, sizeof(cwd)));
+	line = getcwd(cwd, sizeof(cwd));
+	if (!line)
+	{
+		printf("Continue to 'cd ..' if you want to go outside the delete directory\n");
+		return ;
+	}
+	content = ft_strdup(line);
+	if (!content)
+	{
+		printf("Impossible to move in the directory that's dont exist !\n");
+		return ;
+	}
 	while (set->env[i])
 	{
 		j = 0;

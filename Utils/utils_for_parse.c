@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_for_parse.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/24 10:26:29 by oszwalbe          #+#    #+#             */
+/*   Updated: 2024/05/24 10:26:31 by oszwalbe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 char	*copy_normal(t_set *set)
@@ -257,14 +269,14 @@ char *find_arg_quoted(t_set *set, int i, int counter, int block)
 			while (set->input[i] != '\"')
 			{
 				tempo[j] = set->input[i];
-				i++;
-				j++;
 				if (!set->input[i])
 				{
 					set->i = i;
 					tempo[j] = '\0';
 					return (tempo);
 				}
+				i++;
+				j++;
 				if (set->input[i] && (set->input[i] == '\"' && set->input[i
 						+ 1] != ' '))
 				{

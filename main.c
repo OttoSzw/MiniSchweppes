@@ -286,13 +286,6 @@ int	check_grammary(t_set *set, char *str)
 	int	i;
 
 	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'' || str[i] == '\"')
-			return (0);
-		i++;
-	}
-	i = 0;
 	if (str[i] == ' ' || str[i] == '|')
 	{
 		while (str[i] == ' ')
@@ -305,6 +298,18 @@ int	check_grammary(t_set *set, char *str)
 	}
 	while (str[i])
 	{
+		if (str[i] == '\'')
+		{
+			i++;
+			while (str[i] && str[i] != '\'')
+				i++;
+		}
+		if (str[i] == '\"')
+		{
+			i++;
+			while (str[i] && str[i] != '\"')
+				i++;
+		}
 		if (str[i] == '>' || str[i] == '<')
 		{
 			if (!str[i + 1])
@@ -351,12 +356,12 @@ int	check_grammary(t_set *set, char *str)
 				}
 			}
 		}
-		else if (str[i] == '|')
+		if (str[i] == '|')
 		{
 			if (str[i + 1])
 			{
 				i++;
-				while (str[i] == ' ')
+				while (str[i] == ' ' || str[i] == '\'' || str[i] == '\"')
 					i++;
 				if (!str[i])
 				{
