@@ -82,35 +82,15 @@ char	**copy_of_tab(char **tab)
 	return (copy);
 }
 
-int	count_cmdpipe(char **av)
-{
-	int	i;
-	int	counter;
-
-	i = 0;
-	counter = 0;
-	while (av[i])
-	{
-		if (ft_strcmp("|", av[i]) == 0)
-			counter++;
-		i++;
-	}
-	counter++;
-	return (counter);
-}
-
 char	***copy_of_tab_of_tab(t_set *set, char **tab)
 {
 	char	***copy;
-	int		i;
-	int		box;
 	int		j;
-	int		time;
 
+	int (i) = 0;
+	int (box) = 0;
+	int (time) = 0;
 	set->nb_arg = count_cmdpipe(tab);
-	i = 0;
-	box = 0;
-	time = 0;
 	copy = (char ***)ft_calloc(sizeof(char **), (set->nb_arg + 1));
 	while (tab[i] && time < (tab_calculate_no_pipe(tab)))
 	{
@@ -120,11 +100,7 @@ char	***copy_of_tab_of_tab(t_set *set, char **tab)
 		set->nb_case = tab_calculate2(set, set->cmd);
 		copy[box] = (char **)ft_calloc(sizeof(char *), (set->nb_case + 1));
 		while (tab[i] && (ft_strcmp("|", tab[i]) != 0))
-		{
-			copy[box][j] = ft_strdup(tab[i]);
-			j++;
-			i++;
-		}
+			copy[box][j++] = ft_strdup(tab[i++]);
 		copy[box][j] = NULL;
 		box++;
 		if (tab[i])

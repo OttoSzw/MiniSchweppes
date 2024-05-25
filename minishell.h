@@ -90,6 +90,7 @@ int			tab_calculate(char **s);
 char		**copy_of_tab(char **tab);
 int			tab_calculate_no_pipe(char **s);
 void		print_tab(char **cmd);
+int			count_cmdpipe(char **av);
 
 //	Utils functions for execution
 
@@ -178,6 +179,7 @@ void		free_paths(char **split);
 // Signals
 
 void		init_struct(t_set *set, char **env);
+void		init_strcut2(t_set *set);
 void		handle_sigint(int sig);
 void		signals(void);
 

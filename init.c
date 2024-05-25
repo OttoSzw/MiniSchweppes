@@ -70,16 +70,5 @@ void	init_struct(t_set *set, char **env)
 	set->return_value = 0;
 	set->flag_pipe = 0;
 	set->size_tab = 0;
-	set->i = 0;
-	set->j = 0;
-	set->saved_in = 0;
-	set->saved_out = 0;
-	set->append = 0;
-	set->index = 0;
-	set->index2 = 0;
-	set->dq = 0;
-	set->sq = 0;
-	set->return_value = 0;
-	set->expand = 0;
-	set->flag_pipe = 0;
+	init_strcut2(set);
 }
