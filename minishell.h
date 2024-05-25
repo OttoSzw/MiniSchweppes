@@ -28,16 +28,6 @@
 # include <time.h>
 # include <unistd.h>
 
-typedef struct pipex
-{
-	int		i;
-	int		yes;
-	int		pipe_fd[2];
-	int		saved_in;
-	int		saved_out;
-	pid_t	id;
-}			t_pipex;
-
 typedef struct s_set
 {
 	char	*input;
@@ -51,6 +41,7 @@ typedef struct s_set
 	int		size_tab;
 	int		need_to_free;
 	int		i;
+	int		j;
 	int		id;
 	int		saved_in;
 	int		saved_out;
@@ -116,6 +107,7 @@ void		do_builtins(t_set *set, char **c);
 int			yes_or_no_builtins(t_set *set, char **c);
 void		command(char ***s, char **c, t_set *set);
 int			redir_or_not(char **av);
+void		if_redir(t_set *set, int nb_files, int rd);
 
 //	Utils functions for parsing
 
@@ -165,13 +157,6 @@ char		*find_path(char *cmd, char **env);
 void		escape(char *path);
 void		escape2(char *path, char **cmd);
 void		free_paths(char **split);
-void		child(char *av, char *av2, int *pipe_fd, char **env,
-				t_pipex *pipex);
-void		child2(char *av, int *pipe_fd, char **env);
-void		child3(char *av, char *av2, int *pipe_fd, char **env,
-				t_pipex *pipex);
-void		do_child(int ac, char **av, t_pipex *pipex, char **env);
-void		exec_child(int ac, char **av, t_pipex *pipex, char **env);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
 void		here_doc(t_set *set, char *limiter, char *av2, int file);

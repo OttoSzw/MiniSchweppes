@@ -312,6 +312,8 @@ int	check_grammary(t_set *set, char *str)
 		}
 		if (str[i] == '>' || str[i] == '<')
 		{
+			while (str[i + 1] && (str[i + 1] == ' ' || str[i + 1] == '\'' || str[i + 1] == '\"'))
+				i++;
 			if (!str[i + 1])
 			{
 				printf("bash: syntax error near unexpected token `newline'\n");
