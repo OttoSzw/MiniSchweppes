@@ -108,6 +108,8 @@ int			yes_or_no_builtins(t_set *set, char **c);
 void		command(char ***s, char **c, t_set *set);
 int			redir_or_not(char **av);
 void		if_redir(t_set *set, int nb_files, int rd);
+void		set_index(t_set *set, int i);
+void		set_index2(t_set *set, int i);
 
 //	Utils functions for parsing
 

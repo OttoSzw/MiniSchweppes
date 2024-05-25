@@ -30,55 +30,26 @@ int	check_append(char **cmd)
 
 int	check_redirections(t_set *set, char **av)
 {
-	int	i;
 	int	j;
 
-	i = set->index2;
+	int (i) = set->index2;
 	while (av[i])
 	{
 		j = 0;
 		while (av[i][j])
 		{
-			if (av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] != '>')
-			{
-				set->index2 = i + 1;
-				return (2);
-			}
-			else if (av[i][j] == '>' && !av[i][j + 1])
-			{
-				set->index2 = i + 1;
-				return (2);
-			}
-			else if (av[i][j] == '>' && av[i][j + 2] && av[i][j + 1] == '>')
-			{
-				set->index2 = i + 1;
-				return (4);
-			}
-			else if (av[i][j] == '>' && !av[i][j + 2] && av[i][j + 1] == '>')
-			{
-				set->index2 = i + 1;
-				return (4);
-			}
-			else if (av[i][j] == '<' && av[i][j + 1] && av[i][j + 1] != '<')
-			{
-				set->index2 = i + 1;
-				return (1);
-			}
-			else if (av[i][j] == '<' && !av[i][j + 1])
-			{
-				set->index2 = i + 1;
-				return (1);
-			}
-			else if (av[i][j] == '<' && av[i][j + 2] && av[i][j + 1] == '<')
-			{
-				set->index2 = i + 1;
-				return (3);
-			}
-			else if (av[i][j] == '<' && !av[i][j + 2] && av[i][j + 1] == '<')
-			{
-				set->index2 = i + 1;
-				return (3);
-			}
+			if ((av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] != '>')
+				|| (av[i][j] == '>' && !av[i][j + 1]))
+				return (set_index2(set, i), 2);
+			else if ((av[i][j] == '>' && av[i][j + 2] && av[i][j + 1] == '>')
+				|| (av[i][j] == '>' && !av[i][j + 2] && av[i][j + 1] == '>'))
+				return (set_index2(set, i), 4);
+			else if ((av[i][j] == '<' && av[i][j + 1] && av[i][j + 1] != '<')
+				|| (av[i][j] == '<' && !av[i][j + 1]))
+				return (set_index2(set, i), 1);
+			else if ((av[i][j] == '<' && av[i][j + 2] && av[i][j + 1] == '<')
+				|| (av[i][j] == '<' && !av[i][j + 2] && av[i][j + 1] == '<'))
+				return (set_index2(set, i), 3);
 			j++;
 		}
 		i++;
@@ -89,33 +60,20 @@ int	check_redirections(t_set *set, char **av)
 int	count_nb_files(char **av)
 {
 	int	i;
-	int	j;
 	int	counter;
 
 	counter = 0;
 	i = 0;
 	while (av[i])
 	{
-		j = 0;
-		if (av[i][j] == '>' && !av[i][j + 1])
+		if (ft_strcmp(">", av[i]) == 0)
 			counter++;
-		else if (av[i][j] == '<' && !av[i][j + 1])
+		else if (ft_strcmp(">>", av[i]) == 0)
 			counter++;
-		while (av[i][j])
-		{
-			if (av[i][j] == '>' && av[i][j + 1] && (av[i][j + 1] != '>'
-					&& av[i][j - 1] != '>'))
-				counter++;
-			else if (av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] == '>')
-				counter++;
-			else if (av[i][j] == '<' && av[i][j + 1] && (av[i][j + 1] != '<'
-					&& av[i][j - 1] != '<'))
-				counter++;
-			else if (av[i][j] == '<' && av[i][j + 1] && av[i][j + 1] == '<')
-				counter++;
-			if (av[i][j])
-				j++;
-		}
+		else if (ft_strcmp("<", av[i]) == 0)
+			counter++;
+		else if (ft_strcmp("<<", av[i]) == 0)
+			counter++;
 		i++;
 	}
 	return (counter);
@@ -124,58 +82,15 @@ int	count_nb_files(char **av)
 char	*find_file_out2(t_set *set, char **cmd)
 {
 	int	i;
-	int	j;
 
 	i = set->index;
 	if (!cmd)
 		return (NULL);
 	while (cmd[i])
 	{
-		j = 0;
-		while (cmd[i][j])
-		{
-			if (cmd[i][j] == '>' && cmd[i][j + 1] && cmd[i][j + 1] != '>')
-			{
-				set->index = i + 1;
-				return (&cmd[i][j + 1]);
-			}
-			else if (cmd[i][j] == '>' && !cmd[i][j + 1])
-			{
-				set->index = i + 1;
-				return (cmd[i + 1]);
-			}
-			else if (cmd[i][j] == '>' && cmd[i][j + 2] && cmd[i][j + 1] == '>')
-			{
-				set->index = i + 1;
-				return (&cmd[i][j + 1]);
-			}
-			else if (cmd[i][j] == '>' && !cmd[i][j + 2] && cmd[i][j + 1] == '>')
-			{
-				set->index = i + 1;
-				return (cmd[i + 1]);
-			}
-			else if (cmd[i][j] == '<' && cmd[i][j + 1] && cmd[i][j + 1] != '<')
-			{
-				set->index = i + 1;
-				return (&cmd[i][j + 1]);
-			}
-			else if (cmd[i][j] == '<' && !cmd[i][j + 1])
-			{
-				set->index = i + 1;
-				return (cmd[i + 1]);
-			}
-			else if (cmd[i][j] == '<' && cmd[i][j + 2] && cmd[i][j + 1] == '<')
-			{
-				set->index = i + 1;
-				return (&cmd[i][j + 1]);
-			}
-			else if (cmd[i][j] == '<' && !cmd[i][j + 2] && cmd[i][j + 1] == '<')
-			{
-				set->index = i + 1;
-				return (cmd[i + 1]);
-			}
-			j++;
-		}
+		if ((ft_strcmp(">", cmd[i]) == 0) || (ft_strcmp(">>", cmd[i]) == 0)
+			|| (ft_strcmp("<", cmd[i]) == 0) || (ft_strcmp("<<", cmd[i]) == 0))
+			return (set_index(set, i), cmd[i + 1]);
 		if (cmd[i])
 			i++;
 	}

@@ -27,19 +27,13 @@ void	print_tab(char **cmd)
 int	redir_or_not(char **av)
 {
 	int	i;
-	int	j;
 
 	i = 0;
 	while (av[i])
 	{
-		j = 0;
-		while (av[i][j])
-		{
-			if (av[i][j] == '>' || av[i][j] == '<')
-				return (1);
-			if (av[i][j])
-				j++;
-		}
+		if (ft_strcmp("<", av[i]) == 0 || ft_strcmp("<<", av[i]) == 0
+			|| ft_strcmp(">", av[i]) == 0 || ft_strcmp(">>", av[i]) == 0)
+			return (1);
 		i++;
 	}
 	return (0);
