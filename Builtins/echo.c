@@ -33,10 +33,7 @@ int	echo_command(char **s)
 
 	newline = 1;
 	if (*s == NULL)
-	{
-		write(1, "\n", 1);
-		return (0);
-	}
+		return (ft_putendl_fd("", 1), 0);
 	if (ft_strncmp(*s, "-n", 2) == 0 && ft_strnnn(*s, 'n') == 0)
 	{
 		newline = 0;

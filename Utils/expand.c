@@ -40,6 +40,7 @@ int	new_cmd(t_set *set, int nb, t_expand *expand)
 		return (0);
 	return (1);
 }
+
 int	new_arg(t_set *set, int nb, t_expand *expand)
 {
 	char	*variable;
@@ -126,8 +127,8 @@ int	expand_quote(t_set *set, int nb)
 
 int	expand(t_set *set)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (set->cmd[i])

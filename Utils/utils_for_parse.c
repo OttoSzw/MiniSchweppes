@@ -20,7 +20,6 @@ char	*copy_normal(t_set *set)
 	char	*tempo;
 
 	i = set->i;
-	// printf("ouen est i : %d\n", set->i);
 	j = 0;
 	counter = 0;
 	while (set->input[i] != '\0' && set->input[i] != ' ')
@@ -50,8 +49,6 @@ char	*copy_normal(t_set *set)
 		}
 		i++;
 	}
-	// printf("expand laaa : %d\n", set->expand);
-	// printf("la taille est de %d\n\n", counter);
 	tempo = malloc(sizeof(char) * (counter + 1));
 	if (!tempo)
 	{
@@ -105,7 +102,6 @@ char	*copy_normal(t_set *set)
 					if (set->input[i] && (set->input[i] == '\'' && set->input[i
 							+ 1] != ' '))
 					{
-						// i++;
 						if (set->input[i] == ' ')
 						{
 							set->i = i;
@@ -114,7 +110,8 @@ char	*copy_normal(t_set *set)
 						}
 					}
 				}
-				if (set->input[i] && (set->input[i] != '\'' && set->input[i + 1] != ' '))
+				if (set->input[i] && (set->input[i] != '\'' && set->input[i
+						+ 1] != ' '))
 				{
 					printf("%c\n", set->input[i]);
 					printf("1\n");
@@ -130,7 +127,6 @@ char	*copy_normal(t_set *set)
 	}
 	set->i = i;
 	tempo[j] = '\0';
-	// printf("tempo = %s|\n", tempo);
 	return (tempo);
 }
 
@@ -154,7 +150,7 @@ int	check_dollar(char *str)
 void	check_sq_dq(t_set *set)
 {
 	int	i;
-	
+
 	i = 0;
 	while (set->input[i])
 	{
@@ -247,11 +243,10 @@ int	find_size_quotes(t_set *set, int i)
 		if (set->input[i])
 			i++;
 	}
-	// printf("%d\n", counter);
 	return (counter);
 }
 
-char *find_arg_quoted(t_set *set, int i, int counter, int block)
+char	*find_arg_quoted(t_set *set, int i, int counter, int block)
 {
 	int		j;
 	char	*tempo;
@@ -359,12 +354,9 @@ char	*copy_quotes(t_set *set)
 
 	i = set->i;
 	counter = find_size_quotes(set, i);
-	// printf("%d\n", counter);
-	// printf("counter %d\n", counter);
 	i = set->i;
 	block = i;
 	tempo = find_arg_quoted(set, i, counter, block);
-	// printf("tempo = %s\n", tempo);
 	return (tempo);
 }
 
@@ -390,8 +382,8 @@ int	check_quotes(t_set *set)
 
 int	find_size_parse(t_set *set)
 {
-	int		i;
-	int		counter;
+	int	i;
+	int	counter;
 
 	i = 0;
 	counter = 0;
@@ -458,7 +450,6 @@ char	**parse(t_set *set)
 		return (NULL);
 	}
 	counter = find_size_parse(set);
-	// printf("Le nombre de mot est : %d\n", counter);
 	g = 0;
 	if (counter == 0)
 		return (NULL);
@@ -472,7 +463,6 @@ char	**parse(t_set *set)
 	}
 	while (set->input[i] && g < counter)
 	{
-		// printf("Indice = %d\n", set->i);
 		i = set->i;
 		while (set->input[i] == ' ')
 		{
@@ -486,28 +476,18 @@ char	**parse(t_set *set)
 		else
 		{
 			split[g] = copy_normal(set);
-			// printf("Apres ouen est i : %d\n", set->i);
 		}
-		// printf("Le tab g%d: %s\n", g, split[g]);
-		// set->i += 1;
 		i++;
 		g++;
 	}
-	// printf("%d\n", g);
 	split[g] = NULL;
-	// g = 0;
-	// while (split[g])
-	// {
-	// 	printf("Le tab : |%s|\n", split[g]);
-	// 	g++;
-	// }
 	return (split);
 }
 
 size_t	ft_occurence(char *s)
 {
-	int i;
-	size_t compteur;
+	int		i;
+	size_t	compteur;
 
 	i = 0;
 	compteur = 0;

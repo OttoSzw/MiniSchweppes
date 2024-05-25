@@ -10,14 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
 int	unset_command(t_set *set, char **env)
 {
 	int	i;
-	int	j;
 
-	j = 1;
+	int (j) = 1;
 	if (!set->cmd[j])
 		return (0);
 	while (j < tab_calculate(set->cmd))

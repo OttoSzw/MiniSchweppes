@@ -52,7 +52,8 @@ int	count_arg(char **cmd)
 		else if (ft_strcmp(">>", cmd[i]) == 0)
 			i += 2;
 		while (cmd[i] && (ft_strcmp(">", cmd[i]) != 0 && ft_strcmp(">>",
-					cmd[i]) != 0 && ft_strcmp("<", cmd[i]) != 0 && ft_strcmp("<<", cmd[i]) != 0))
+					cmd[i]) != 0 && ft_strcmp("<", cmd[i]) != 0
+				&& ft_strcmp("<<", cmd[i]) != 0))
 		{
 			count++;
 			i++;
@@ -66,7 +67,7 @@ char	**copy_tabcmd(t_set *set, char **cmd)
 	char	**copy;
 	int		i;
 	int		j;
-	int	size;
+	int		size;
 
 	size = count_arg(cmd);
 	i = 0;
@@ -89,7 +90,8 @@ char	**copy_tabcmd(t_set *set, char **cmd)
 		else if (ft_strcmp(">>", cmd[i]) == 0)
 			i += 2;
 		while (cmd[i] && (ft_strcmp(">", cmd[i]) != 0 && ft_strcmp(">>",
-					cmd[i]) != 0 && ft_strcmp("<", cmd[i]) != 0 && ft_strcmp("<<", cmd[i]) != 0))
+					cmd[i]) != 0 && ft_strcmp("<", cmd[i]) != 0
+				&& ft_strcmp("<<", cmd[i]) != 0))
 		{
 			copy[j] = ft_strdup(cmd[i]);
 			i++;
@@ -126,7 +128,7 @@ void	print_tab(char **cmd)
 	}
 }
 
-int redir_or_not(char **av)
+int	redir_or_not(char **av)
 {
 	int	i;
 	int	j;
@@ -165,9 +167,6 @@ void	do_simple_command(t_set *set)
 	set->index2 = 0;
 	rd = redir_or_not(set->cmd);
 	nb_files = count_nb_files(set->cmd);
-	// printf("rd : %d\n", rd);
-	// printf("%d\n", set->sq);
-	// printf("%d\n", set->dq);
 	if (rd && (set->dq != 1 && set->sq != 1))
 	{
 		signal(SIGINT, SIG_IGN);
@@ -214,7 +213,8 @@ void	do_simple_command(t_set *set)
 				}
 				else if (set->rdd[i] == 4)
 				{
-					fd = open(set->files[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+					fd = open(set->files[i], O_WRONLY | O_CREAT | O_APPEND,
+							0644);
 					if (fd == -1)
 						error_mess();
 					dup2(fd, STDOUT_FILENO);
@@ -222,7 +222,8 @@ void	do_simple_command(t_set *set)
 				}
 				else if (set->rdd[i] == 2)
 				{
-					fd = open(set->files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+					fd = open(set->files[i], O_WRONLY | O_CREAT | O_TRUNC,
+							0644);
 					if (fd == -1)
 						error_mess();
 					dup2(fd, STDOUT_FILENO);
@@ -242,10 +243,9 @@ void	do_simple_command(t_set *set)
 					close(set->saved_in);
 					free_struct2(set);
 					close(set->saved_out);
-					exit (1);
+					exit(1);
 				}
 				set->need_to_free = 1;
-				// print_tab(cmd);
 				close(set->saved_in);
 				close(set->saved_out);
 				execute_command(set, cmd, set->env);
@@ -253,7 +253,7 @@ void	do_simple_command(t_set *set)
 			close(set->saved_in);
 			free_struct2(set);
 			close(set->saved_out);
-			exit (1);
+			exit(1);
 		}
 		reset_fd(set);
 		waitpid(id, &status, 0);

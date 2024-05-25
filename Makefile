@@ -13,10 +13,10 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = main.c command.c free.c
-SRCS += Builtins/echo.c Builtins/cd.c Builtins/env.c Builtins/pwd.c Builtins/exit.c Builtins/unset.c Builtins/export.c
+SRCS = main.c command.c init.c
+SRCS += Builtins/echo.c Builtins/cd.c Builtins/env.c Builtins/pwd.c Builtins/exit.c Builtins/unset.c Builtins/export.c Builtins/utils_for_export.c
 SRCS += Utils/utils_for_exec.c Utils/utils_for_tab.c Utils/utils_for_parse.c Utils/utils_for_pipe.c Utils/utils_for_files.c
-SRCS += Utils/expand.c Utils/utils_for_expand.c Utils/utils_for_expand2.c
+SRCS += Utils/expand.c Utils/utils_for_expand.c Utils/utils_for_expand2.c Utils/utils_for_free.c
 SRCS += $(wildcard pipex/*.c)
 OBJS = ${SRCS:.c=.o}
 LIBFTDIR = libft

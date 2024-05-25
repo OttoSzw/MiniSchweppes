@@ -12,28 +12,10 @@
 
 #include "../minishell.h"
 
-void	change_var_of_env(t_set *set)
+void	replace_var(t_set *set, char *content, int i, int j)
 {
-	int	i;
-	int	j;
-	char	cwd[1024];
 	char	*index;
-	char	*content;
-	char	*line;
 
-	i = 0;
-	line = getcwd(cwd, sizeof(cwd));
-	if (!line)
-	{
-		printf("Continue to 'cd ..' if you want to go outside the delete directory\n");
-		return ;
-	}
-	content = ft_strdup(line);
-	if (!content)
-	{
-		printf("Impossible to move in the directory that's dont exist !\n");
-		return ;
-	}
 	while (set->env[i])
 	{
 		j = 0;
@@ -57,6 +39,28 @@ void	change_var_of_env(t_set *set)
 	}
 }
 
+void	change_var_of_env(t_set *set)
+{
+	int		i;
+	int		j;
+	char	cwd[1024];
+	char	*content;
+	char	*line;
+
+	i = 0;
+	j = 0;
+	line = getcwd(cwd, sizeof(cwd));
+	if (!line)
+		return (ft_putendl_fd("Continue to 'cd ..' :)", 1));
+	content = ft_strdup(line);
+	if (!content)
+	{
+		printf("Impossible to move in the directory that's dont exist !\n");
+		return ;
+	}
+	replace_var(set, content, i, j);
+}
+
 int	cd_command(t_set *set, char **path)
 {
 	int	i;
@@ -71,24 +75,15 @@ int	cd_command(t_set *set, char **path)
 	if (ft_strncmp(path[i], "..", 2) == 0)
 	{
 		if (chdir("..") != 0)
-		{
-			perror("chdir() error");
-			return (1);
-		}
+			return (perror("chdir() error"), 1);
 		change_var_of_env(set);
 	}
 	else
 	{
 		if (path[i + 1])
-		{
-			ft_putendl_fd(" too many arguments", 2);
-			return (1);
-		}
+			return (ft_putendl_fd(" too many arguments", 2), 1);
 		if (chdir(path[i]) != 0)
-		{
-			perror("chdir() error");
-			return (1);
-		}
+			return (perror("chdir() error"), 1);
 		change_var_of_env(set);
 	}
 	return (0);

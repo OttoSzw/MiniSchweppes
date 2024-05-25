@@ -70,22 +70,6 @@ void	here_doc(t_set *set, char *limiter, char *av2, int file)
 	close(file);
 }
 
-void	free_paths(char **split)
-{
-	int	i;
-
-	i = 0;
-	if (split)
-	{
-		while (split[i])
-		{
-			free(split[i]);
-			i++;
-		}
-		free(split);
-	}
-}
-
 void	error_cmd(void)
 {
 	ft_putendl_fd("Command not found", 2);

@@ -45,20 +45,12 @@ int	check_arg(char *str)
 	{
 		if (str[i] == '=')
 			return (1);
-		if (!((str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')))
+		if (!((str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A'
+					&& str[i] <= 'Z')))
 			return (0);
 		i++;
 	}
 	return (1);
-}
-
-void	swap_strings(char **a, char **b)
-{
-	char	*temp;
-
-	temp = *a;
-	*a = *b;
-	*b = temp;
 }
 
 void	sort_list_ascii(char **export_env)
@@ -87,13 +79,9 @@ int	success_find(char **env, char *tab2)
 {
 	char	*str;
 	int		i;
-	int		size;
 
 	i = 0;
-	size = 0;
-	while (tab2[size] != '\0' && tab2[size] != '=')
-		size++;
-	str = malloc(sizeof(char) * (size + 1));
+	str = malloc(sizeof(char) * (exportlen(tab2) + 1));
 	i = 0;
 	while (tab2[i] && tab2[i] != '=')
 	{
@@ -104,7 +92,7 @@ int	success_find(char **env, char *tab2)
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], str, size) == 0)
+		if (ft_strncmp(env[i], str, exportlen(tab2)) == 0)
 		{
 			free(env[i]);
 			env[i] = ft_strdup(tab2);
@@ -117,22 +105,14 @@ int	success_find(char **env, char *tab2)
 
 int	export_command(t_set *set, char **c, int size2c)
 {
-	char **export_env;
-	int i;
-	int j;
-	int size;
+	int	j;
+	int	size;
 
-	i = 0;
+	int (i) = 0;
 	j = 0;
 	size = tab_calculate(set->env);
-	if (c[0] && !c[1])
-	{
-		export_env = copy_of_tab(set->env);
-		sort_list_ascii(export_env);
-		print_tab(export_env);
-		free_tab(export_env);
+	if (!export_alone(set, c))
 		return (0);
-	}
 	i++;
 	while (i < size2c)
 	{
@@ -146,10 +126,7 @@ int	export_command(t_set *set, char **c, int size2c)
 			}
 		}
 		else
-		{
-			ft_putendl_fd(" not a valid identifier\n", 2);
-			return (1);
-		}
+			return (ft_putendl_fd(" not a valid identifier\n", 2), 1);
 		i++;
 	}
 	return (0);

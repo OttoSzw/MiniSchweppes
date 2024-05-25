@@ -57,13 +57,13 @@ char	*prep_variable(t_expand *expand)
 
 int	expand_return(t_set *set, int nb)
 {
-	int	size;
-	int	size2;
-	char *tempo;
-	char *tempo2;
-	char *copy;
-	int	i;
-	int	j;
+	int		size;
+	int		size2;
+	char	*tempo;
+	char	*tempo2;
+	char	*copy;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;

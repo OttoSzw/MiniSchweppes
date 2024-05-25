@@ -82,6 +82,13 @@ int			exit_command(t_set *set, char *s, int size);
 int			unset_command(t_set *set, char **env);
 int			export_command(t_set *set, char **c, int size);
 
+// Utils for Builtins
+
+int			exportlen(char *tab2);
+void		swap_strings(char **a, char **b);
+int			export_alone(t_set *set, char **c);
+void		sort_list_ascii(char **export_env);
+
 //	Utils functions for tab
 
 void		free_tab(char **s);
@@ -168,14 +175,16 @@ int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
 void		here_doc(t_set *set, char *limiter, char *av2, int file);
 
-// Utils for free and init
+// Utils for free
 
-void		init_struct(t_set *set, char **env);
 void		free_struct(t_set *set);
 void		free_struct2(t_set *set);
+void		free_tab(char **s);
+void		free_paths(char **split);
 
 // Signals
 
+void		init_struct(t_set *set, char **env);
 void		handle_sigint(int sig);
 void		signals(void);
 

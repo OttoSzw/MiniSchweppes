@@ -1,32 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   utils_for_export.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/10 00:31:35 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/04/10 00:31:36 by oszwalbe         ###   ########.fr       */
+/*   Created: 2024/05/25 12:23:38 by oszwalbe          #+#    #+#             */
+/*   Updated: 2024/05/25 12:23:40 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
 
-int	ft_strcmp(char *s1, char *s2)
+#include "../minishell.h"
+
+int	exportlen(char *tab2)
 {
 	int	i;
-	int	size1;
-	int	size2;
 
 	i = 0;
-	size1 = ft_strlen(s1);
-	size2 = ft_strlen(s2);
-	if (size1 != size2)
-		return (1);
-	while (s1[i])
-	{
-		if (s1[i] != s2[i])
-			return (s1[i] - s2[i]);
+	while (tab2[i] != '\0' && tab2[i] != '=')
 		i++;
+	return (i);
+}
+
+void	swap_strings(char **a, char **b)
+{
+	char	*temp;
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+int	export_alone(t_set *set, char **c)
+{
+	char	**export_env;
+
+	if (c[0] && !c[1])
+	{
+		export_env = copy_of_tab(set->env);
+		sort_list_ascii(export_env);
+		return (print_tab(export_env), free_tab(export_env), 0);
 	}
-	return (0);
+	return (1);
 }

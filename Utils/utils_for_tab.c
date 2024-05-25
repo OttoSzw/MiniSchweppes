@@ -12,24 +12,11 @@
 
 #include "../minishell.h"
 
-void	free_tab(char **s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		free(s[i]);
-		i++;
-	}
-	free(s);
-}
-
 int	tab_calculate(char **s)
 {
 	int	i;
 
-	i = 0; 
+	i = 0;
 	while (s[i] != NULL)
 		i++;
 	return (i);
@@ -38,7 +25,7 @@ int	tab_calculate(char **s)
 int	tab_calculate_no_pipe(char **s)
 {
 	int	i;
-	int count;
+	int	count;
 
 	count = 0;
 	i = 0;
@@ -55,7 +42,7 @@ int	tab_calculate_no_pipe(char **s)
 int	tab_calculate2(t_set *set, char **s)
 {
 	int	i;
-	int counter;
+	int	counter;
 
 	counter = 0;
 	i = set->index;
@@ -69,7 +56,6 @@ int	tab_calculate2(t_set *set, char **s)
 	}
 	return (counter);
 }
-
 
 char	**copy_of_tab(char **tab)
 {
@@ -115,13 +101,13 @@ int	count_cmdpipe(char **av)
 
 char	***copy_of_tab_of_tab(t_set *set, char **tab)
 {
-	char ***copy;
-	int nb_arg;
-	int	nb_case;
-	int i;
-	int box;
-	int j;
-	int	time;
+	char	***copy;
+	int		nb_arg;
+	int		nb_case;
+	int		i;
+	int		box;
+	int		j;
+	int		time;
 
 	nb_arg = count_cmdpipe(tab);
 	i = 0;

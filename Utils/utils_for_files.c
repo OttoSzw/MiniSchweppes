@@ -86,78 +86,6 @@ int	check_redirections(t_set *set, char **av)
 	return (0);
 }
 
-char	*find_file_out(char **cmd)
-{
-	int	i;
-
-	i = 0;
-	while (cmd[i])
-	{
-		if (cmd[i + 1] && ((ft_strcmp(">", cmd[i]) == 0) || (ft_strcmp(">>",
-						cmd[i]) == 0)))
-		{
-			return (cmd[i + 1]);
-		}
-		i++;
-	}
-	return (NULL);
-}
-
-char	*find_file_in(char **cmd)
-{
-	int	i;
-
-	i = 0;
-	while (cmd[i])
-	{
-		if (cmd[i + 1] && (ft_strcmp("<", cmd[i]) == 0))
-		{
-			return (cmd[i + 1]);
-		}
-		i++;
-	}
-	return (NULL);
-}
-
-char	*find_file_in2(t_set *set, char **cmd)
-{
-	int	i;
-	int	j;
-
-	i = set->index;
-	while (cmd[i])
-	{
-		j = 0;
-		while (cmd[i][j])
-		{
-			if (cmd[i][j] == '<' && cmd[i][j + 1] && cmd[i][j + 1] != '<')
-			{
-				set->index = i + 1;
-				return (&cmd[i][j + 1]);
-			}
-			else if (cmd[i][j] == '<' && !cmd[i][j + 1])
-			{
-				set->index = i + 1;
-				return (cmd[i + 1]);
-			}
-			else if (cmd[i][j] == '<' && cmd[i][j + 2] && cmd[i][j + 1] == '<')
-			{
-				set->index = i + 1;
-				return (&cmd[i][j + 1]);
-			}
-			else if (cmd[i][j] == '<' && !cmd[i][j + 2] && cmd[i][j + 1] == '<')
-			{
-				set->index = i + 1;
-				return (cmd[i + 1]);
-			}
-			j++;
-		}
-		if (cmd[i])
-			i++;
-	}
-	return (NULL);
-}
-
 int	count_nb_files(char **av)
 {
 	int	i;
@@ -175,11 +103,13 @@ int	count_nb_files(char **av)
 			counter++;
 		while (av[i][j])
 		{
-			if (av[i][j] == '>' && av[i][j + 1] && (av[i][j + 1] != '>' && av[i][j - 1] != '>'))
+			if (av[i][j] == '>' && av[i][j + 1] && (av[i][j + 1] != '>'
+					&& av[i][j - 1] != '>'))
 				counter++;
 			else if (av[i][j] == '>' && av[i][j + 1] && av[i][j + 1] == '>')
 				counter++;
-			else if (av[i][j] == '<' && av[i][j + 1] && (av[i][j + 1] != '<' && av[i][j - 1] != '<'))
+			else if (av[i][j] == '<' && av[i][j + 1] && (av[i][j + 1] != '<'
+					&& av[i][j - 1] != '<'))
 				counter++;
 			else if (av[i][j] == '<' && av[i][j + 1] && av[i][j + 1] == '<')
 				counter++;
@@ -194,7 +124,7 @@ int	count_nb_files(char **av)
 char	*find_file_out2(t_set *set, char **cmd)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = set->index;
 	if (!cmd)
