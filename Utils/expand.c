@@ -143,15 +143,8 @@ int	expand(t_set *set)
 				break ;
 			}
 			else if (set->cmd[i][j] == '$')
-			{
-				if (set->cmd[i][j + 1] == '?')
-				{
-					if (expand_return(set, i) == 0)
-						return (0);
-				}
-				else if (expand_arg(set, i) == 0)
+				if (expand_norm(set, i, j) == 0)
 					return (0);
-			}
 			if (set->cmd[i][j])
 				j++;
 		}

@@ -120,7 +120,7 @@ char	**find_write(t_set *set, char **cmd)
 	return (to_copy);
 }
 
-void	do_builtins(t_set *set, char **c)
+int	do_builtins(t_set *set, char **c)
 {
 	char	**to_write;
 	int		i;
@@ -133,21 +133,23 @@ void	do_builtins(t_set *set, char **c)
 			to_write = find_write(set, c);
 			set->return_value = echo_command(to_write);
 			free_tab(to_write);
+			return (set->return_value);
 		}
 		else if (ft_strcmp("cd", c[i]) == 0)
-			set->return_value = cd_command(set, c);
+			return (cd_command(set, c));
 		else if (ft_strcmp("pwd", c[i]) == 0)
-			set->return_value = pwd_command(c);
+			return (pwd_command(c));
 		else if (ft_strcmp("env", c[i]) == 0)
-			set->return_value = env_command(set->env);
+			return (env_command(set->env));
 		else if (ft_strcmp("exit", c[i]) == 0)
-			set->return_value = exit_command(set, c[1], tab_calculate(c));
+			return (exit_command(set, c[1], tab_calculate(c)));
 		else if (ft_strcmp("unset", c[i]) == 0)
-			set->return_value = unset_command(set, set->env);
+			return (unset_command(set, set->env));
 		else if (ft_strcmp("export", c[i]) == 0)
-			set->return_value = export_command(set, c, tab_calculate(c));
+			return (export_command(set, c, tab_calculate(c)));
 		i++;
 	}
+	return (-1);
 }
 
 void	executable(t_set *set)
@@ -244,7 +246,7 @@ void	command(char ***s, char **c, t_set *set)
 		}
 		if (yes_or_no_builtins(set, set->cmd) == 1)
 		{
-			do_builtins(set, c);
+			set->return_value = do_builtins(set, c);
 			free_struct(set);
 			exit(set->return_value);
 		}
@@ -268,7 +270,7 @@ void	command(char ***s, char **c, t_set *set)
 	{
 		if (yes_or_no_builtins(set, c) == 1)
 		{
-			do_builtins(set, c);
+			set->return_value = do_builtins(set, c);
 			free_struct(set);
 			exit(set->return_value);
 		}

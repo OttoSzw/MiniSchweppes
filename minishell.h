@@ -103,7 +103,7 @@ int			check_redirections(t_set *set, char **av);
 int			check_append(char **cmd);
 int			count_cmdpipe(char **av);
 char		**copy_tabcmd(t_set *set, char **cmd);
-void		do_builtins(t_set *set, char **c);
+int			do_builtins(t_set *set, char **c);
 int			yes_or_no_builtins(t_set *set, char **c);
 void		command(char ***s, char **c, t_set *set);
 int			redir_or_not(char **av);
@@ -133,6 +133,7 @@ void		replace_expand(t_set *set, int i, t_expand *expand, char *variable);
 void		free_cmd(t_set *set, int nb);
 int			expand_after(char *tmp, int i, t_expand *expand);
 int			expand_quote(t_set *set, int nb);
+int			expand_norm(t_set *set, int i, int j);
 
 // Utils for Files
 int			check_append(char **cmd);

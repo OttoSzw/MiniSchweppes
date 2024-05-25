@@ -28,7 +28,7 @@ void	no_redir(t_set *set)
 
 	if (yes_or_no_builtins(set, set->cmd) == 1)
 	{
-		do_builtins(set, set->cmd);
+		set->return_value = do_builtins(set, set->cmd);
 		reset_fd(set);
 	}
 	else

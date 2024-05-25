@@ -85,7 +85,7 @@ void	child_redir(t_set *set, int nb_files, int rd)
 	init_redir(set, nb_files, rd);
 	do_redir(set, nb_files, set->j);
 	if (yes_or_no_builtins(set, set->cmd) == 1)
-		do_builtins(set, set->cmd);
+		set->return_value = do_builtins(set, set->cmd);
 	else
 	{
 		cmd = copy_tabcmd(set, set->cmd);
