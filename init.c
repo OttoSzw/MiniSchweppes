@@ -14,6 +14,20 @@
 
 extern int	g_signal;
 
+void	init_fd(t_set *set)
+{
+	set->saved_in = dup(STDIN_FILENO);
+	set->saved_out = dup(STDOUT_FILENO);
+}
+
+void	reset_fd(t_set *set)
+{
+	dup2(set->saved_in, STDIN_FILENO);
+	dup2(set->saved_out, STDOUT_FILENO);
+	close(set->saved_in);
+	close(set->saved_out);
+}
+
 void	handle_sigint(int sig)
 {
 	if (g_signal == 2)

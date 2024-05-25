@@ -51,6 +51,7 @@ typedef struct s_set
 	int		size_tab;
 	int		need_to_free;
 	int		i;
+	int		id;
 	int		saved_in;
 	int		saved_out;
 	int		saved_fd;
