@@ -160,6 +160,7 @@ void		free_paths(char **split);
 int			ft_strcmp(char *s1, char *s2);
 void		PipeBendoNaBendo(t_set *set, char **env);
 void		here_doc(t_set *set, char *limiter, char *av2, int file);
+int			get_next_line2(char **line);
 
 // Utils for free
 
