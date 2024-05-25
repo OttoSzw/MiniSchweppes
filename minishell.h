@@ -37,6 +37,8 @@ typedef struct s_set
 	char	**files;
 	char	*file;
 	char	***c;
+	int		nb_arg;
+	int		nb_case;
 	int		round;
 	int		size_tab;
 	int		need_to_free;
@@ -134,6 +136,7 @@ void		free_cmd(t_set *set, int nb);
 int			expand_after(char *tmp, int i, t_expand *expand);
 int			expand_quote(t_set *set, int nb);
 int			expand_norm(t_set *set, int i, int j);
+char		*copy_char(t_set *set, int size2, int size, char *tempo);
 
 // Utils for Files
 int			check_append(char **cmd);

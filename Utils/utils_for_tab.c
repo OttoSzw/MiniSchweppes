@@ -102,25 +102,23 @@ int	count_cmdpipe(char **av)
 char	***copy_of_tab_of_tab(t_set *set, char **tab)
 {
 	char	***copy;
-	int		nb_arg;
-	int		nb_case;
 	int		i;
 	int		box;
 	int		j;
 	int		time;
 
-	nb_arg = count_cmdpipe(tab);
+	set->nb_arg = count_cmdpipe(tab);
 	i = 0;
 	box = 0;
 	time = 0;
-	copy = (char ***)ft_calloc(sizeof(char **), (nb_arg + 1));
+	copy = (char ***)ft_calloc(sizeof(char **), (set->nb_arg + 1));
 	while (tab[i] && time < (tab_calculate_no_pipe(tab)))
 	{
 		set->index = i;
 		j = 0;
-		nb_case = 0;
-		nb_case = tab_calculate2(set, set->cmd);
-		copy[box] = (char **)ft_calloc(sizeof(char *), (nb_case + 1));
+		set->nb_case = 0;
+		set->nb_case = tab_calculate2(set, set->cmd);
+		copy[box] = (char **)ft_calloc(sizeof(char *), (set->nb_case + 1));
 		while (tab[i] && (ft_strcmp("|", tab[i]) != 0))
 		{
 			copy[box][j] = ft_strdup(tab[i]);

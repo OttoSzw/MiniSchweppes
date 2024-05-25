@@ -56,6 +56,8 @@ void	signals(void)
 
 void	init_struct(t_set *set, char **env)
 {
+	set->nb_arg = 0;
+	set->nb_case = 0;
 	set->input = NULL;
 	set->env = copy_of_tab(env);
 	set->cmd = NULL;

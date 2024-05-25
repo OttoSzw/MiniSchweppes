@@ -60,63 +60,21 @@ int	expand_return(t_set *set, int nb)
 	int		size;
 	int		size2;
 	char	*tempo;
-	char	*tempo2;
 	char	*copy;
-	int		i;
-	int		j;
 
-	i = 0;
-	j = 0;
 	tempo = ft_itoa(set->return_value);
-	tempo2 = ft_strdup(set->cmd[nb]);
-	free(set->cmd[nb]);
 	size = ft_strlen(tempo);
-	size2 = ft_strlen(tempo2);
+	size2 = ft_strlen(set->cmd[nb]);
 	if (size)
 	{
-		if (size == 1)
-			copy = malloc(sizeof(char) * (size2));
-		else if (size == 2)
-			copy = malloc(sizeof(char) * (size2 + 1));
-		else if (size == 3)
-			copy = malloc(sizeof(char) * (size2 + 2));
-		while (tempo2[i] != '$')
-		{
-			copy[j] = tempo2[i];
-			j++;
-			i++;
-		}
-		if (size == 1)
-			copy[j] = tempo[0];
-		else if (size == 2)
-		{
-			copy[j] = tempo[0];
-			j++;
-			copy[j] = tempo[1];
-		}
-		else if (size == 3)
-		{
-			copy[j] = tempo[0];
-			j++;
-			copy[j] = tempo[1];
-			j++;
-			copy[j] = tempo[2];
-		}
-		i++;
-		j++;
-		while (tempo2[i] && tempo2[i + 1])
-		{
-			copy[j] = tempo2[i + 1];
-			j++;
-			i++;
-		}
-		copy[j] = '\0';
+		set->j = nb;
+		copy = copy_char(set, size2, size, tempo);
+		free(set->cmd[nb]);
 		set->cmd[nb] = ft_strdup(copy);
 	}
 	if (!set->cmd[nb])
 		return (0);
 	free(copy);
-	free(tempo2);
 	free(tempo);
 	return (1);
 }
