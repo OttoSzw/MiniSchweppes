@@ -56,11 +56,13 @@ int	exit_command(t_set *set, char *s, int size)
 	error = 0;
 	if (!s)
 	{
-		free_tab(set->cmd);
-		free(set->input);
-		free_tab(set->env);
-		if (set->flag_pipe == 0)
+		if (set->flag_pipe == 1)
+			free_struct(set);
+		else
+		{
+			free_struct2(set);
 			reset_fd(set);
+		}
 		printf("exit\n");
 		exit(0);
 	}
@@ -69,9 +71,10 @@ int	exit_command(t_set *set, char *s, int size)
 	printf("exit\n");
 	nb = ft_atol(s);
 	error = check_errors(s, nb);
-	free_tab(set->cmd);
-	free(set->input);
-	free_tab(set->env);
+	if (set->flag_pipe == 1)
+		free_struct(set);
+	else
+		free_struct2(set);
 	reset_fd(set);
 	exit(error);
 }

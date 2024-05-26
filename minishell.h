@@ -42,6 +42,7 @@ typedef struct s_set
 	int		round;
 	int		size_tab;
 	int		need_to_free;
+	int		pipe_fd[2];
 	int		i;
 	int		j;
 	int		id;
@@ -113,6 +114,9 @@ int			redir_or_not(char **av);
 void		if_redir(t_set *set, int nb_files, int rd);
 void		set_index(t_set *set, int i);
 void		set_index2(t_set *set, int i);
+void		child_pipe(int *pipe_fd, t_set *set, char ***c, int i);
+void		child_pipe2(int fd_previous, int *pipe_fd, t_set *set, char ***c);
+void		child_pipe3(int fd_previous, t_set *set, char ***c, int i);
 
 //	Utils functions for parsing
 
