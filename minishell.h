@@ -122,6 +122,13 @@ void		child_pipe3(int fd_previous, t_set *set, char ***c, int i);
 
 char		**parse(t_set *set);
 size_t		ft_occurence(char *s);
+int			find_size_parse(t_set *set);
+char		*copy_normal(t_set *set);
+void		oueoue(t_set *set, int *i);
+void		def(int *counter, int *i);
+int			find_size_quotes(t_set *set, int i);
+char		*find_arg_quoted(t_set *set, int i, int counter, int block);
+void		check_sq_dq(t_set *set);
 
 // Expand functions
 

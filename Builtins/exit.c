@@ -28,6 +28,7 @@ int	is_num(char *s)
 
 int	check_errors(char *s, long nb)
 {
+	printf("exit\n");
 	if (ft_strlen(s) == 19 && ft_strcmp(s, "9223372036854775807") != 0)
 	{
 		ft_putendl_fd("numeric argument required", 2);
@@ -51,9 +52,8 @@ int	check_errors(char *s, long nb)
 int	exit_command(t_set *set, char *s, int size)
 {
 	long	nb;
-	int		error;
 
-	error = 0;
+	int (error) = 0;
 	if (!s)
 	{
 		if (set->flag_pipe == 1)
@@ -68,7 +68,6 @@ int	exit_command(t_set *set, char *s, int size)
 	}
 	if (size > 2)
 		return (ft_putendl_fd(" too many arguments", 2), 1);
-	printf("exit\n");
 	nb = ft_atol(s);
 	error = check_errors(s, nb);
 	if (set->flag_pipe == 1)

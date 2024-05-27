@@ -44,3 +44,45 @@ void	init_strcut2(t_set *set)
 	set->expand = 0;
 	set->flag_pipe = 0;
 }
+
+void	oueoue(t_set *set, int *i)
+{
+	*i = set->i;
+	while (set->input[*i] == ' ')
+		(*i)++;
+}
+
+void	def(int *counter, int *i)
+{
+	(*counter)++;
+	(*i)++;
+}
+
+void	check_sq_dq(t_set *set)
+{
+	int (i) = 0;
+	while (set->input[i])
+	{
+		if (set->input[i] == '\"')
+		{
+			i++;
+			while (set->input[i] != '\"')
+			{
+				if (set->input[i] == '>' || set->input[i] == '<')
+					set->dq = 1;
+				i++;
+			}
+		}
+		else if (set->input[i] == '\'')
+		{
+			i++;
+			while (set->input[i] != '\'')
+			{
+				if (set->input[i] == '>' || set->input[i] == '<')
+					set->sq = 1;
+				i++;
+			}
+		}
+		i++;
+	}
+}
