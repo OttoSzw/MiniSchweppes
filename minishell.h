@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 23:27:42 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 10:28:52 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:16:25 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/signal.h>
+# include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <time.h>
@@ -203,6 +204,7 @@ void		free_struct(t_set *set);
 void		free_struct2(t_set *set);
 void		free_tab(char **s);
 void		free_paths(char **split);
+void		escpapee(t_set *set, char **cmd);
 
 // Signals
 

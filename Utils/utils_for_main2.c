@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 17:08:15 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 10:29:10 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 10:48:33 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ int	check_before_pipe(char *str)
 				return (-1);
 			return (1);
 		}
-		i++;
+		if (str[i])
+			i++;
 	}
 	return (1);
 }

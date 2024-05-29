@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_for_exec.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 17:27:03 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/04/21 17:27:05 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:15:38 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*find_path(char *cmd, char **env)
 		part_paths = ft_strjoin(paths[i], "/");
 		path = ft_strjoin(part_paths, cmd);
 		free(part_paths);
-		if (access(path, F_OK) == 0)
+		if (access(path, F_OK || X_OK) == 0)
 			return (free_paths(paths), path);
 		free(path);
 		i++;
@@ -67,7 +67,8 @@ char	*find_path(char *cmd, char **env)
 
 void	check_the_path(t_set *set, char **path, char **av, char **cmd)
 {
-	*path = find_path(cmd[0], set->env);
+	if (cmd[0])
+		*path = find_path(cmd[0], set->env);
 	if (!*path)
 	{
 		ft_putstr_fd("bash : ", 2);
@@ -112,7 +113,9 @@ void	execute_command(t_set *set, char **av, char **env)
 	char	*path;
 
 	check_cmd(&cmd, av);
-	if (access(cmd[0], F_OK) == 0)
+	if (!cmd[0])
+		escpapee(set, cmd);
+	if (access(cmd[0], F_OK | X_OK) == 0)
 	{
 		path = ft_strdup(cmd[0]);
 		if (!path)

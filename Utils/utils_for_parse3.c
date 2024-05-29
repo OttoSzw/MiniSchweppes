@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 17:55:45 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/28 12:00:00 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 11:16:34 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,4 +103,12 @@ char	*find_arg_quoted(t_set *set, int i, int counter, int block)
 			i++;
 	}
 	return (set->i = i, tempo[j] = '\0', tempo);
+}
+
+void	escpapee(t_set *set, char **cmd)
+{
+	free_tab(cmd);
+	free_struct2(set);
+	ft_putendl_fd("bash :  : Command not found!", 2);
+	exit(127);
 }
