@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_for_pipe2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 16:34:49 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/26 16:34:51 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:15:46 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	init_pipe(t_set *set, int size, int i)
 		error_mess();
 }
 
-void	do_child_pipe(t_set *set, int size, char ***c, int fd_previous)
+void	do_child_pipe(t_set *set, int size, char ***c, int *fd_previous)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -84,7 +84,7 @@ void	exec_multiple_pipe(char ***c, t_set *set, int size)
 	{
 		init_pipe(set, size, i);
 		if (set->id == 0)
-			do_child_pipe(set, size, c, fd_previous);
+			do_child_pipe(set, size, c, &fd_previous);
 		else
 		{
 			do_parent(set, size, &fd_previous);

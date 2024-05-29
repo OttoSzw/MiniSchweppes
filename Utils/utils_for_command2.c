@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_for_command2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 14:37:57 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/25 14:38:00 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:26:30 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	do_redir(t_set *set, int nb_files, int i)
 {
 	int	fd;
 
+	i = 0;
 	while (i < nb_files)
 	{
 		if (set->rdd[i] == 1 || set->rdd[i] == 3)

@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 23:27:42 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 11:16:25 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:12:48 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_set
 	int		pipe_fd[2];
 	int		i;
 	int		j;
-	int		id;
+	pid_t	id;
 	int		saved_in;
 	int		saved_out;
 	int		saved_fd;
@@ -124,8 +124,8 @@ void		if_redir(t_set *set, int nb_files, int rd);
 void		set_index(t_set *set, int i);
 void		set_index2(t_set *set, int i);
 void		child_pipe(int *pipe_fd, t_set *set, char ***c, int i);
-void		child_pipe2(int fd_previous, int *pipe_fd, t_set *set, char ***c);
-void		child_pipe3(int fd_previous, t_set *set, char ***c, int i);
+void		child_pipe2(int *fd_previous, int *pipe_fd, t_set *set, char ***c);
+void		child_pipe3(int *fd_previous, t_set *set, char ***c, int i);
 int			yes_or_no_builtins(t_set *set, char **c);
 char		**find_write(t_set *set, char **cmd);
 int			do_builtins(t_set *set, char **c);

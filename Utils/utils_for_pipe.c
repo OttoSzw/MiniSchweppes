@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_for_pipe.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:26:36 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/24 10:26:38 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:12:34 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,24 +36,24 @@ void	child_pipe(int *pipe_fd, t_set *set, char ***c, int i)
 	command(c, c[i], set);
 }
 
-void	child_pipe2(int fd_previous, int *pipe_fd, t_set *set, char ***c)
+void	child_pipe2(int *fd_previous, int *pipe_fd, t_set *set, char ***c)
 {
-	dup2(fd_previous, STDIN_FILENO);
+	dup2(*fd_previous, STDIN_FILENO);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	close(pipe_fd[0]);
 	close(set->saved_in);
 	close(set->saved_out);
-	close(fd_previous);
+	close(*fd_previous);
 	command(c, c[set->j], set);
 }
 
-void	child_pipe3(int fd_previous, t_set *set, char ***c, int i)
+void	child_pipe3(int *fd_previous, t_set *set, char ***c, int i)
 {
-	dup2(fd_previous, STDIN_FILENO);
+	dup2(*fd_previous, STDIN_FILENO);
 	close(set->saved_in);
 	close(set->saved_out);
-	close(fd_previous);
+	close(*fd_previous);
 	command(c, c[i], set);
 }
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:22:59 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/24 10:23:01 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:07:34 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	signals(void)
 void	init_struct(t_set *set, char **env)
 {
 	set->nb_arg = 0;
+	set->id = -1;
 	set->nb_case = 0;
 	set->input = NULL;
 	set->stop = 0;
