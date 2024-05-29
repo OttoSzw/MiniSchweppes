@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:22:31 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/24 10:22:52 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 09:45:58 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,14 @@ void	do_simple_command(t_set *set)
 	int	nb_files;
 
 	init_fd(set);
+	set->j = 0;
 	set->append = 0;
 	set->index = 0;
 	set->index2 = 0;
 	rd = redir_or_not(set->cmd);
 	nb_files = count_nb_files(set->cmd);
 	if (rd && (set->dq != 1 && set->sq != 1))
-	{
 		if_redir(set, nb_files, rd);
-	}
 	else
 		no_redir(set);
 }

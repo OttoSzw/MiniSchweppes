@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 23:27:42 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/04/20 23:27:44 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 10:28:52 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@
 # include <time.h>
 # include <unistd.h>
 
+# define COLOR "\1\033[38;5;226m\2M\1\033[38;5;220m\2i\1\033[38;5;214m\2\
+n\1\033[38;5;208m\2i\1\033[38;5;202m\2S\1\033[38;5;196m\2\
+c\1\033[38;5;202m\2h\1\033[38;5;208m\2w\1\033[38;5;214m\2\
+e\1\033[38;5;220m\2p\1\033[38;5;226m\2p\1\033[38;5;220m\2\
+e\1\033[38;5;214m\2s\1\033[38;5;208m\2 \1\033[38;5;208m\2\
+>\1\033[0m "
+
 typedef struct s_set
 {
 	char	*input;
@@ -37,6 +44,7 @@ typedef struct s_set
 	char	**files;
 	char	*file;
 	char	***c;
+	int		stop;
 	int		nb_arg;
 	int		nb_case;
 	int		round;
@@ -117,6 +125,10 @@ void		set_index2(t_set *set, int i);
 void		child_pipe(int *pipe_fd, t_set *set, char ***c, int i);
 void		child_pipe2(int fd_previous, int *pipe_fd, t_set *set, char ***c);
 void		child_pipe3(int fd_previous, t_set *set, char ***c, int i);
+int			yes_or_no_builtins(t_set *set, char **c);
+char		**find_write(t_set *set, char **cmd);
+int			do_builtins(t_set *set, char **c);
+void		do_redir(t_set *set, int nb_files, int i);
 
 //	Utils functions for parsing
 
@@ -129,6 +141,11 @@ void		def(int *counter, int *i);
 int			find_size_quotes(t_set *set, int i);
 char		*find_arg_quoted(t_set *set, int i, int counter, int block);
 void		check_sq_dq(t_set *set);
+void		executable(t_set *set);
+void		find_write_exec(int *i, char **cmd);
+void		pass_the_quote(char *str, int *i);
+int			pass_the_pipe(t_set *set, char *str, int *i);
+void		init_read(t_set *set);
 
 // Expand functions
 

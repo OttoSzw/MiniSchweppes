@@ -23,6 +23,7 @@ char	*copy_quotes(t_set *set)
 	counter = find_size_quotes(set, i);
 	i = set->i;
 	block = i;
+	set->stop = 0;
 	tempo = find_arg_quoted(set, i, counter, block);
 	return (tempo);
 }

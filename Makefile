@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: oszwalbe <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/20 23:27:37 by oszwalbe          #+#    #+#              #
-#    Updated: 2024/05/24 10:23:21 by oszwalbe         ###   ########.fr        #
+#    Updated: 2024/05/29 09:53:37 by oszwalbe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = main.c command.c init.c
 SRCS += Builtins/echo.c Builtins/cd.c Builtins/env.c Builtins/pwd.c Builtins/exit.c Builtins/unset.c Builtins/export.c Builtins/utils_for_export.c
-SRCS += Utils/utils_for_exec.c Utils/utils_for_tab.c Utils/utils_for_parse.c Utils/utils_for_pipe.c Utils/utils_for_files.c Utils/utils_for_command.c Utils/utils_for_expand3.c Utils/utils_for_pipe2.c Utils/copy_normal.c
-SRCS += Utils/expand.c Utils/utils_for_expand.c Utils/utils_for_expand2.c Utils/utils_for_free.c Utils/utils_for_command2.c Utils/utils_for_exec2.c Utils/utils_for_files2.c Utils/utils_for_tab2.c Utils/utils_for_parse2.c Utils/utils_for_parse3.c
+SRCS += Utils/utils_for_exec.c Utils/utils_for_tab.c Utils/utils_for_parse.c Utils/utils_for_pipe.c Utils/utils_for_files.c Utils/utils_for_command.c Utils/utils_for_expand3.c Utils/utils_for_pipe2.c Utils/copy_normal.c Utils/utils_for_parse4.c Utils/utils_for_main.c Utils/utils_for_exec3.c
+SRCS += Utils/expand.c Utils/utils_for_expand.c Utils/utils_for_expand2.c Utils/utils_for_free.c Utils/utils_for_command2.c Utils/utils_for_exec2.c Utils/utils_for_files2.c Utils/utils_for_tab2.c Utils/utils_for_parse2.c Utils/utils_for_parse3.c Utils/utils_for_main2.c
 SRCS += $(wildcard pipex/*.c)
 OBJS = ${SRCS:.c=.o}
 LIBFTDIR = libft
