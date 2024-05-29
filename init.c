@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:22:59 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 13:07:34 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 15:08:14 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,41 @@ void	reset_fd(t_set *set)
 
 void	handle_sigint(int sig)
 {
-	if (g_signal == 2)
+	if (sig == SIGINT)
 	{
-		g_signal = 130;
-		write(2, "\n", 1);
-		return ;
+		if (g_signal == 2)
+		{
+			close(STDIN_FILENO);
+			write(2, "^C", 2);
+			g_signal = 130;
+			return ;
+		}
+		else
+		{
+			g_signal = 0;
+			write(2, "^C\n", 3);
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+		}
 	}
-	g_signal = 130;
-	(void)sig;
-	write(2, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	if (sig == SIGQUIT)
+	{
+		if (g_signal == 0 || g_signal == 2)
+			return ;
+		printf("Quit(core dumped)\n");
+	}
 }
 
 void	signals(void)
 {
 	struct sigaction	waouh;
 
-	signal(SIGQUIT, SIG_IGN);
-	ft_bzero(&waouh, sizeof(waouh));
+	rl_catch_signals = 0;
+	sigemptyset(&waouh.sa_mask);
+	waouh.sa_flags = 0;
 	waouh.sa_handler = handle_sigint;
+	sigaction(SIGQUIT, &waouh, NULL);
 	sigaction(SIGINT, &waouh, NULL);
 }
 

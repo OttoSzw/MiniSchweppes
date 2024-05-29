@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 23:27:42 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 13:12:48 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:44:28 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,8 @@ void		find_write_exec(int *i, char **cmd);
 void		pass_the_quote(char *str, int *i);
 int			pass_the_pipe(t_set *set, char *str, int *i);
 void		init_read(t_set *set);
+int			check_gram_in(char *str, int *i);
+int			check_gram_out(char *str, int *i);
 
 // Expand functions
 

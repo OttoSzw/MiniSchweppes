@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 23:27:31 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 10:28:36 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:43:48 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,8 @@ int	check_grammary(t_set *set, char *str)
 	while (str[i])
 	{
 		pass_the_quote(str, &i);
-		if (str[i] == '<' || str[i] == '>')
-		{
-			i++;
-			while (str[i] == ' ' || str[i] == '\'' || str[i] == '\"')
-				i++;
-			if (!str[i] || str[i] == '>' || str[i] == '<' || str[i] == '|')
-			{
-				printf("bash: syntax error near unexpected token `newline'\n");
-				return (set->return_value = 2, 2);
-			}
-		}
+		if (check_gram_out(str, &i) || check_gram_in(str, &i))
+			return (set->return_value = 2, 2);
 		if (pass_the_pipe(set, str, &i) == 2)
 			return (2);
 		if (set->input[i])

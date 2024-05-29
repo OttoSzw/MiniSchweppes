@@ -6,7 +6,7 @@
 /*   By: oszwalbe <oszwalbe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 17:27:03 by oszwalbe          #+#    #+#             */
-/*   Updated: 2024/05/29 11:15:38 by oszwalbe         ###   ########.fr       */
+/*   Updated: 2024/05/29 14:50:12 by oszwalbe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	here_doc(t_set *set, char *limiter, char *av2, int file)
 	init_fd(set);
 	while (1)
 	{
-		get_next_line2(&line);
+		line = readline(">");
 		if (ft_strcmp(line, limiter) == 0 || line == NULL || g_signal == 130)
 		{
 			if (line)
